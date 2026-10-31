@@ -1,0 +1,664 @@
+{
+ "snippets": {
+  "definite-integral": {
+   "file": "DefiniteIntegralArea_scene.py",
+   "blocks": [
+    {
+     "start": 57,
+     "lines": [
+      "        # --- 3. 矩形越切越密：4 → 16 → 64 ---",
+      "        tip = m.Text(\"用矩形去估面积\", font_size=26, color=m.TEAL)",
+      "        tip.next_to(head, m.DOWN, buff=0.12)",
+      "",
+      "        def make_rects(n: int) -> m.VGroup:",
+      "            return axes.get_riemann_rectangles(",
+      "                curve,",
+      "                x_range=[0, 2],",
+      "                dx=2 / n,",
+      "                input_sample_type=\"left\",",
+      "                stroke_width=1,",
+      "                stroke_color=m.BLACK,",
+      "                fill_opacity=0.75,",
+      "                color=(m.BLUE, m.GREEN),",
+      "            )",
+      "",
+      "        n_label = m.Text(\"分成 4 个矩形\", font_size=28, color=m.BLUE_B)",
+      "        n_label.to_corner(m.UR, buff=0.35)",
+      "",
+      "        rects = make_rects(4)",
+      "        self.play(m.FadeIn(tip), m.FadeIn(n_label), run_time=0.6)",
+      "        self.play(m.FadeIn(rects, lag_ratio=0.05), run_time=1.3)",
+      "        self.wait(0.6)",
+      "",
+      "        for n, label_text in ((16, \"分成 16 个矩形\"), (64, \"分成 64 个矩形\")):",
+      "            new_rects = make_rects(n)",
+      "            new_label = m.Text(label_text, font_size=28, color=m.BLUE_B)",
+      "            new_label.to_corner(m.UR, buff=0.35)",
+      "            self.play(",
+      "                m.FadeOut(rects),",
+      "                m.FadeIn(new_rects),",
+      "                m.FadeOut(n_label),",
+      "                m.FadeIn(new_label),",
+      "                run_time=1.2,",
+      "            )",
+      "            rects = new_rects",
+      "            n_label = new_label",
+      "            self.wait(0.4)"
+     ]
+    }
+   ]
+  },
+  "tcp-handshake": {
+   "file": "02-tcp-handshake/scene.py",
+   "blocks": [
+    {
+     "start": 86,
+     "lines": [
+      "        # --- 3. 第 1 次：SYN ---",
+      "        pkt1 = self._packet(\"SYN\", \"seq=x\", m.YELLOW)",
+      "        pkt1.move_to([left_x, y_pkt, 0])",
+      "",
+      "        arrow1 = m.Arrow(",
+      "            [left_x, y_link, 0],",
+      "            [right_x, y_link, 0],",
+      "            buff=0,",
+      "            stroke_width=3.5,",
+      "            color=m.YELLOW,",
+      "            max_tip_length_to_length_ratio=0.06,",
+      "        )",
+      "        arrow1.set_opacity(0.4)",
+      "",
+      "        self.play(m.FadeIn(arrow1), m.FadeIn(pkt1), run_time=0.45)",
+      "        self.play(pkt1.animate.move_to([right_x, y_pkt, 0]), run_time=1.55)",
+      "        self.play(m.FadeOut(pkt1), run_time=0.3)",
+      "",
+      "        c_state2 = cn(\"SYN_SENT\", font_size=24, color=m.YELLOW)",
+      "        c_state2.next_to(client, m.DOWN, buff=0.28)",
+      "        s_state2 = cn(\"SYN_RCVD\", font_size=24, color=m.YELLOW)",
+      "        s_state2.next_to(server, m.DOWN, buff=0.28)",
+      "        self.play(",
+      "            m.FadeOut(c_state),",
+      "            m.FadeIn(c_state2),",
+      "            m.FadeOut(s_state),",
+      "            m.FadeIn(s_state2),",
+      "            run_time=0.65,",
+      "        )",
+      "        c_state, s_state = c_state2, s_state2",
+      "        self.wait(1.0)"
+     ]
+    }
+   ]
+  },
+  "matrix-transform": {
+   "file": "01-matrix-transform/scene.py",
+   "blocks": [
+    {
+     "start": 178,
+     "lines": [
+      "        # ------------------------------------------------------------ 变换步骤",
+      "        def step(rows, text, geometric, run_time=4.0):",
+      "            \"\"\"几何动画 + 矩阵更新同步播放。\"\"\"",
+      "            target_matrix = m.MathTex(r\"M = \" + bmatrix(rows), font_size=46).move_to(matrix_mob)",
+      "            target_caption = m.Text(text, font=font, font_size=26, color=m.YELLOW).move_to(caption)",
+      "            self.play(",
+      "                geometric,",
+      "                m.Transform(matrix_mob, target_matrix),",
+      "                m.Transform(caption, target_caption),",
+      "                run_time=run_time,",
+      "                rate_func=m.smooth,",
+      "            )",
+      "",
+      "        # ① 旋转 30°：刚性旋转，网格保持正方形",
+      "        step(",
+      "            ROTATION,",
+      "            \"① 旋转 30°\",",
+      "            figure.animate.rotate(ROTATION_DEGREES * m.DEGREES, about_point=origin),",
+      "        )",
+      "        self.wait(0.5)",
+      "",
+      "        # ② 拉伸：沿 x 拉伸、沿 y 压缩，出现矩形格子",
+      "        step(",
+      "            matmul(STRETCH, ROTATION),",
+      "            \"② 拉伸 (1.6, 0.6)\",",
+      "            m.ApplyMatrix(STRETCH, figure, about_point=origin),",
+      "        )",
+      "        self.wait(0.5)",
+      "",
+      "        # ③ 剪切：竖线保持垂直，横线倾斜",
+      "        step(",
+      "            matmul(SHEAR, matmul(STRETCH, ROTATION)),",
+      "            \"③ 剪切 (1, 0.9)\",",
+      "            m.ApplyMatrix(SHEAR, figure, about_point=origin),",
+      "        )",
+      "        self.wait(0.5)"
+     ]
+    }
+   ]
+  },
+  "pythagoras": {
+   "file": "03-pythagoras/scene.py",
+   "blocks": [
+    {
+     "start": 457,
+     "lines": [
+      "        center = at(PUZ_S / 2, PUZ_S / 2)",
+      "        first = make_triangle(at(PUZ_S, 0), at(PUZ_S, PUZ_A), at(PUZ_A, 0))",
+      "        self._set_caption(\"短边 a 是青色，长边 b 是金色，斜边 c 是红色。\")",
+      "        self.play(m.Create(first), run_time=1.3)",
+      "        self.wait(1.4)",
+      "",
+      "        triangles = [first]",
+      "        self._set_caption(\"再复制三份，每个角放一个。\")",
+      "        for _ in range(3):",
+      "            turned = triangles[-1].copy()",
+      "            self.play(m.Rotate(turned, m.PI / 2, about_point=center), run_time=0.95)",
+      "            triangles.append(turned)",
+      "        self.wait(1.4)"
+     ]
+    },
+    {
+     "start": 500,
+     "lines": [
+      "        self._set_header(\"平移重排\")",
+      "        self._set_caption(\"把三角形滑到新位置，不旋转，大小也不变。\")",
+      "        self.play(m.FadeOut(c2), run_time=0.4)",
+      "        self.wait(1.0)",
+      "",
+      "        self.remove(tilted)",
+      "        region = m.always_redraw(lambda: blank_region(outline, triangles))",
+      "        self.add(region)",
+      "        for tri in triangles:",
+      "            self.add(tri)",
+      "",
+      "        slides = (",
+      "            (upper_left, [PUZ_A, -PUZ_B, 0.0]),",
+      "            (upper_right, [-PUZ_B, 0.0, 0.0]),",
+      "            (lower_left, [0.0, PUZ_A, 0.0]),",
+      "        )",
+      "        for moving, vector in slides:",
+      "            self.play(moving.animate.shift(vector), run_time=1.85)",
+      "            self.wait(0.45)",
+      ""
+     ]
+    }
+   ]
+  },
+  "projectile": {
+   "file": "05-projectile/scene.py",
+   "blocks": [
+    {
+     "start": 532,
+     "lines": [
+      "        measure_y = -2.52",
+      "        gaps = m.VGroup()",
+      "        for a, b in zip(xs, xs[1:]):",
+      "            gaps.add(",
+      "                m.DoubleArrow(",
+      "                    [a, measure_y, 0],",
+      "                    [b, measure_y, 0],",
+      "                    buff=0.02,",
+      "                    color=CYAN,",
+      "                    stroke_width=3.2,",
+      "                    max_tip_length_to_length_ratio=0.16,",
+      "                )",
+      "            )",
+      "        gaps.set_z_index(4)",
+      "        equal = chip(self._words(\"间距相等\", size=26, color=CYAN))",
+      "        equal.next_to(gaps, m.RIGHT, buff=0.16)",
+      "        if equal.get_bottom()[1] < BOTTOM_LIMIT:",
+      "            equal.shift(m.UP * (BOTTOM_LIMIT - equal.get_bottom()[1] + 0.02))",
+      "",
+      "        self._set_caption(\"间距都相等，说明水平方向是匀速直线运动。\")",
+      "        self.play(m.LaggedStart(*(m.GrowArrow(gap) for gap in gaps), lag_ratio=0.2), run_time=1.3)",
+      "        self.play(m.FadeIn(equal), run_time=0.45)",
+      "        self.wait(2.2)",
+      "",
+      "        formula = chip(m.MathTex(r\"x = v_0 t\", font_size=42, color=CYAN))",
+      "        formula.move_to([5.15, 1.35, 0])",
+      "        self._set_caption(\"忽略空气阻力，水平方向不受力，所以 x = v0 t。\")",
+      "        self.play(m.Write(formula), run_time=1.0)",
+      "        self.wait(2.4)"
+     ]
+    }
+   ]
+  },
+  "roadster": {
+   "file": "07-roadster/scene_principle.py",
+   "blocks": [
+    {
+     "start": 106,
+     "lines": [
+      "def slot(index: int) -> float:",
+      "    \"\"\"第 index 句字幕的停留时间：配音时长 + 0.55 秒余量。\"\"\"",
+      "    return DURATIONS[index] + 0.55"
+     ]
+    },
+    {
+     "start": 613,
+     "lines": [
+      "    # ----------------------------------------------------------------- 0 开场",
+      "    def _open(self) -> None:",
+      "        # slot 4.07：动画 0.42+0.55+0.30+1.50+0.35 = 3.12",
+      "        self._say(0, m.Text(CAPTIONS[0], font=self.font, font_size=28, color=m.WHITE), \"为什么不会掉\")",
+      "        cx, cy = self.RAMP_C",
+      "        radius = self.RAMP_R",
+      "        ground_y = cy - radius",
+      "        base = make_roadster(1.5)",
+      "        base.move_to(m.ORIGIN)",
+      "        self._car_base = base",
+      "        self._ride = radius - base.height / 2 - 0.05",
+      "",
+      "        ramp = m.Arc(",
+      "            radius=radius,",
+      "            start_angle=-math.pi / 2,",
+      "            angle=math.pi,",
+      "            stroke_width=12,",
+      "            color=SILVER_DARK,",
+      "        )",
+      "        ramp.move_arc_center_to([cx, cy, 0])",
+      "        ground = self._road(ground_y, -6.9, cx, width=8)",
+      "        car = self._car_on_ramp(-math.pi / 2 + 0.03)",
+      "        mark = chip(self._txt(\"？\", size=58, color=FORCE))",
+      "        mark.move_to([2.9, 1.5, 0])",
+      "        note = self._label(\"半圆坡道（示意）\", 22, MUTED)",
+      "        note.move_to([2.9, -1.9, 0])",
+      "",
+      "        self._anim(m.Create(ramp), m.FadeIn(ground), run_time=0.55)",
+      "        self._anim(m.FadeIn(car), run_time=0.30)",
+      "        self._anim(",
+      "            m.Rotate(car, angle=math.pi - 0.03, about_point=[cx, cy, 0]),",
+      "            run_time=1.50,",
+      "            rate_func=m.smooth,",
+      "        )",
+      "        self._anim(m.FadeIn(mark), m.FadeIn(note), run_time=0.35)",
+      "        self._keep(ramp, ground, car, mark, note, focus=car)",
+      "        self._end_scene()"
+     ]
+    }
+   ]
+  },
+  "dong-force": {
+   "file": "08-dong-joint/DongForceTransfer.srt",
+   "blocks": [
+    {
+     "start": 1,
+     "lines": [
+      "1",
+      "00:00:00,000 --> 00:00:04,300",
+      "榫卯锁好了，力是怎么传下去的？",
+      "",
+      "2",
+      "00:00:04,300 --> 00:00:08,060",
+      "先看普通的穿斗房子。比例只是示意。",
+      "",
+      "3",
+      "00:00:08,060 --> 00:00:11,660",
+      "屋顶的重量，主要是檩条直接压在柱头上。",
+      "",
+      "4",
+      "00:00:11,660 --> 00:00:14,910",
+      "柱子再把这份力送到地面。",
+      "",
+      "5",
+      "00:00:14,910 --> 00:00:18,310",
+      "穿枋呢？它横向拉住柱子，整榀架子才不散。",
+      "",
+      "6",
+      "00:00:18,310 --> 00:00:21,710",
+      "它不是主要往下传力的那根。",
+      "",
+      "7",
+      "00:00:21,710 --> 00:00:25,410",
+      "鼓楼出挑，就不一样了。",
+      "",
+      "8",
+      "00:00:25,410 --> 00:00:30,810",
+      "瓜柱立在穿枋上，重量先压到枋上，再由枋传给主承柱。",
+      "",
+      "9",
+      "00:00:30,810 --> 00:00:36,260",
+      "节点怎么不松？羊角销从上面插进去，榫头就拔不出来。",
+      "",
+      "10",
+      "00:00:36,260 --> 00:00:39,710",
+      "木楔塞进缝里，把空隙挤满，节点就不晃。",
+      "",
+      "11",
+      "00:00:39,710 --> 00:00:42,860",
+      "销子锁住，木楔塞紧。",
+      "",
+      "12",
+      "00:00:42,860 --> 00:00:47,410",
+      "还有一招：卯口进口大、出口小，枋越往里穿，卡得越紧。",
+      "",
+      "13",
+      "00:00:47,410 --> 00:00:51,400",
+      "这叫越穿越紧。说的是卯口，不是销和楔。"
+     ]
+    }
+   ]
+  },
+  "four-stroke": {
+   "file": "_transfer/grok-out/fs_run2.py",
+   "blocks": [
+    {
+     "start": 8,
+     "lines": [
+      "shots=json.load(open(P+'script.json'))['shots']",
+      "def dur(f): return float(subprocess.check_output(['ffprobe','-v','error','-show_entries','format=duration','-of','csv=p=0',f]))",
+      "res=[]",
+      "for i,s in enumerate(shots):",
+      "  f=W+f'vo{i}.wav'",
+      "  if not os.path.exists(f):",
+      "    body=json.dumps({'model':'qwen3-tts-flash','input':{'text':s['vo'],'voice':'Serena','language_type':'Chinese'}}).encode()",
+      "    r=urllib.request.Request('https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation',body,{'Authorization':'Bearer '+key,'Content-Type':'application/json'})",
+      "    u=json.load(urllib.request.urlopen(r,timeout=120))['output']['audio']['url']",
+      "    urllib.request.urlretrieve(u,f)",
+      "  d=dur(f); st=s['t0']+0.4; res.append((st,d,s))"
+     ]
+    }
+   ]
+  },
+  "how-scene": {
+   "file": "DefiniteIntegralArea_scene.py",
+   "blocks": [
+    {
+     "start": 12,
+     "lines": [
+      "class DefiniteIntegralArea(m.Scene):",
+      "    def construct(self) -> None:",
+      "        # --- 1. 标题 ---",
+      "        title = m.Text(\"定积分：曲线下的面积\", font_size=48, color=m.WHITE)",
+      "        subtitle = m.Text(\"考研数学二 · 入门直觉\", font_size=28, color=m.GREY_B)",
+      "        head = m.VGroup(title, subtitle).arrange(m.DOWN, buff=0.22)",
+      "        head.move_to(m.ORIGIN)",
+      "",
+      "        self.play(m.Write(title), run_time=1.3)",
+      "        self.play(m.FadeIn(subtitle, shift=0.2 * m.UP), run_time=0.7)",
+      "        self.wait(0.7)",
+      "        self.play(head.animate.scale(0.65).to_edge(m.UP, buff=0.18), run_time=0.8)"
+     ]
+    }
+   ]
+  },
+  "how-config": {
+   "file": "03-pythagoras/scene.py",
+   "blocks": [
+    {
+     "start": 19,
+     "lines": [
+      "m.config.pixel_width = 1920",
+      "m.config.pixel_height = 1080"
+     ]
+    },
+    {
+     "start": 38,
+     "lines": [
+      "# 画面上下两条字幕带，图形不要伸进这里。",
+      "TOP_LIMIT = 2.95",
+      "BOTTOM_LIMIT = -2.85"
+     ]
+    }
+   ]
+  },
+  "how-font": {
+   "file": "07-roadster/scene_principle.py",
+   "blocks": [
+    {
+     "start": 111,
+     "lines": [
+      "def pick_cjk_font() -> str:",
+      "    \"\"\"用 fontconfig 选一个系统里真实存在的中文字体，避免方块字。\"\"\"",
+      "    try:",
+      "        proc = subprocess.run(",
+      "            [\"fc-list\", \":lang=zh\", \"family\"],",
+      "            capture_output=True,",
+      "            text=True,",
+      "            timeout=5,",
+      "        )",
+      "        families: set[str] = set()",
+      "        for line in proc.stdout.splitlines():",
+      "            for name in line.split(\",\"):",
+      "                families.add(name.strip())",
+      "        for candidate in CJK_FONT_CANDIDATES:",
+      "            if candidate in families:",
+      "                return candidate",
+      "    except Exception:",
+      "        pass",
+      "    return CJK_FONT_CANDIDATES[0]",
+      "",
+      "",
+      "def chip(mob, opacity=0.92):",
+      "    \"\"\"给标签垫一块深色底，避免被线条压住。\"\"\"",
+      "    mob.add_background_rectangle(color=\"#10141c\", opacity=opacity, buff=0.06)",
+      "    mob.set_z_index(8, family=True)",
+      "    return mob",
+      ""
+     ]
+    }
+   ]
+  },
+  "how-lru": {
+   "file": "04-lru/scene.py",
+   "blocks": [
+    {
+     "start": 192,
+     "lines": [
+      "def _check_trace() -> None:",
+      "    lru = simulate(SEQUENCE, CAPACITY, \"lru\")",
+      "    fifo = simulate(SEQUENCE, CAPACITY, \"fifo\")",
+      "    states = [",
+      "        [7],",
+      "        [0, 7],",
+      "        [1, 0, 7],",
+      "        [2, 1, 0],",
+      "        [0, 2, 1],",
+      "        [3, 0, 2],",
+      "        [0, 3, 2],",
+      "        [4, 0, 3],",
+      "        [2, 4, 0],",
+      "        [3, 2, 4],",
+      "        [0, 3, 2],",
+      "        [3, 0, 2],",
+      "    ]",
+      "    assert [event[\"state\"] for event in lru[\"events\"]] == states",
+      "    assert lru[\"faults\"] == 9 and lru[\"hits\"] == 3",
+      "    assert fifo[\"faults\"] == 10 and fifo[\"hits\"] == 2"
+     ]
+    },
+    {
+     "start": 228,
+     "lines": [
+      "_check_trace()",
+      "LRU = simulate(SEQUENCE, CAPACITY, \"lru\")",
+      "FIFO = simulate(SEQUENCE, CAPACITY, \"fifo\")",
+      "CAPTIONS = [describe(i, event) for i, event in enumerate(LRU[\"events\"])]"
+     ]
+    }
+   ]
+  },
+  "how-captions": {
+   "file": "07-roadster/scene_principle.py",
+   "blocks": [
+    {
+     "start": 56,
+     "lines": [
+      "# 旁白即字幕，顺序和时间轴一一对应。",
+      "CAPTIONS = [",
+      "    \"一辆车倒挂在坡道上，为什么不会掉下来？\",",
+      "    \"答案其实就在车底，那里装着一台风扇。\",",
+      "    \"风扇周围围着一圈密封裙，把车底封起来。\","
+     ]
+    },
+    {
+     "start": 87,
+     "lines": [
+      "def _load_durations(count: int) -> list:",
+      "    \"\"\"读同目录 durations.json；读不到就按句子长度估一个。\"\"\"",
+      "    values = [len(CAPTIONS[i]) * 0.25 for i in range(count)]",
+      "    try:",
+      "        path = os.path.join(_HERE, \"durations.json\")",
+      "        with open(path, \"r\", encoding=\"utf-8\") as handle:",
+      "            data = json.load(handle)",
+      "        loaded = [float(item) for item in data]",
+      "    except Exception:",
+      "        return values",
+      "    for i in range(count):",
+      "        if i < len(loaded):",
+      "            values[i] = loaded[i]",
+      "    return values",
+      "",
+      "",
+      "DURATIONS = _load_durations(len(CAPTIONS))",
+      "",
+      "",
+      "def slot(index: int) -> float:",
+      "    \"\"\"第 index 句字幕的停留时间：配音时长 + 0.55 秒余量。\"\"\"",
+      "    return DURATIONS[index] + 0.55"
+     ]
+    }
+   ]
+  },
+  "how-timings": {
+   "file": "07-roadster/scene_principle.py",
+   "blocks": [
+    {
+     "start": 591,
+     "lines": [
+      "    def _write_timings(self) -> None:",
+      "        \"\"\"把每句的起止时间写进同目录 timings.json；写不了也不能让渲染失败。\"\"\"",
+      "        try:",
+      "            rows = []",
+      "            for i, text in enumerate(CAPTIONS):",
+      "                if i >= len(self._starts):",
+      "                    break",
+      "                start = self._starts[i]",
+      "                end = self._starts[i + 1] if i + 1 < len(self._starts) else self._now()",
+      "                rows.append(",
+      "                    {",
+      "                        \"start\": round(float(start), 3),",
+      "                        \"end\": round(float(end), 3),",
+      "                        \"text\": text,",
+      "                    }",
+      "                )",
+      "            path = os.path.join(_HERE, \"timings.json\")",
+      "            with open(path, \"w\", encoding=\"utf-8\") as handle:",
+      "                json.dump(rows, handle, ensure_ascii=False, indent=1)",
+      "        except Exception:",
+      "            pass"
+     ]
+    }
+   ]
+  },
+  "how-mix": {
+   "file": "_transfer/grok-out/fs_run2.py",
+   "blocks": [
+    {
+     "start": 20,
+     "lines": [
+      "sr=44100;T=57.7;t=np.arange(T*sr)/sr;b=np.zeros_like(t)",
+      "chords=[[57,60,64,69],[53,57,60,65],[48,52,55,60],[55,59,62,67]]",
+      "hz=lambda m:440*2**((m-69)/12)",
+      "for k in range(int(T/4)+1):",
+      "  c=chords[k%4];t0=k*4",
+      "  for j,m in enumerate(c):",
+      "    s0=int((t0+j*0.5)*sr);n=min(int(4*sr),len(t)-s0)",
+      "    if n<=0: continue",
+      "    tt=np.arange(n)/sr;env=np.exp(-tt*1.1)*(1-np.exp(-tt*60))",
+      "    b[s0:s0+n]+=0.18*env*(np.sin(2*np.pi*hz(m)*tt)+0.3*np.sin(4*np.pi*hz(m)*tt))",
+      "  s0=int(t0*sr);n=min(4*sr,len(t)-s0)",
+      "  if n>0:",
+      "    tt=np.arange(n)/sr;b[s0:s0+n]+=0.08*np.sin(np.pi*tt/4)*np.sin(2*np.pi*hz(c[0]-12)*tt)",
+      "b/=np.abs(b).max();b*=0.8"
+     ]
+    },
+    {
+     "start": 44,
+     "lines": [
+      "n=len(res)",
+      "fc=';'.join(fl)+';'+''.join(f'[v{i}]' for i in range(n))+f'amix=inputs={n}:normalize=0,apad,atrim=0:57.7,asplit[vo][sc];[1:a]volume=-14dB,afade=t=in:d=2,afade=t=out:st=54.7:d=3[bg];[bg][sc]sidechaincompress=threshold=0.03:ratio=4:attack=50:release=600[bgd];[vo][bgd]amix=inputs=2:normalize=0,loudnorm=I=-16:TP=-1.5,aresample=44100[a]'",
+      "subprocess.run(['ffmpeg','-y','-i',V,'-i',W+'bgm.wav']+ins+['-filter_complex',fc,'-map','0:v','-map','[a]','-c:v','copy','-c:a','aac','-b:a','192k',OUT+'four-stroke_voiced.mp4'],check=True,capture_output=True)",
+      "subprocess.run(['ffmpeg','-y','-i',V,'-i',W+'bgm.wav','-filter_complex','[1:a]volume=-8dB,afade=t=in:d=2,afade=t=out:st=54.7:d=3[a]','-map','0:v','-map','[a]','-c:v','copy','-c:a','aac','-b:a','192k',OUT+'four-stroke_bgm.mp4'],check=True,capture_output=True)"
+     ]
+    }
+   ]
+  },
+  "how-poster": {
+   "file": "_transfer/posters.sh",
+   "blocks": [
+    {
+     "start": 1,
+     "lines": [
+      "cd /mnt/d/ManimGX",
+      "for f in 01-matrix-transform/MatrixTransformsPlane.mp4 02-tcp-handshake/TcpThreeWayHandshake.mp4 03-pythagoras/PythagoreanProof.mp4 05-projectile/ProjectileMotion.mp4 07-roadster/RoadsterPrinciple_voiced.mp4 08-dong-joint/DongForceTransfer.mp4 09-four-stroke/four-stroke_voiced.mp4 DefiniteIntegralArea.mp4; do",
+      "  d=$(ffprobe -v error -show_entries format=duration -of csv=p=0 \"$f\")",
+      "  t=$(python3 -c \"print($d*0.75)\")",
+      "  out=\"${f%.mp4}-poster.jpg\"",
+      "  ffmpeg -y -v error -ss \"$t\" -i \"$f\" -frames:v 1 -q:v 3 \"$out\" && echo \"$out\"",
+      "done"
+     ]
+    }
+   ]
+  }
+ },
+ "transcripts": {
+  "roadster": {
+   "file": "07-roadster/narration_text.json",
+   "lines": [
+    "一辆车倒挂在坡道上，为什么不会掉下来？",
+    "答案其实就在车底，那里装着一台风扇。",
+    "风扇周围围着一圈密封裙，把车底封起来。",
+    "风扇一转，就把车底和路面之间的空气抽走。",
+    "空气一走，车底就变成一块低压区。",
+    "你可以把它当成一个大吸盘，死死吸在路面上。",
+    "车底是低压，车顶却还是正常的大气压。",
+    "上面往下压，下面往上吸，车就被按在路面上。",
+    "他们说，这套吸附力最高大概有 2G，差不多是车重的两倍。",
+    "倒挂的时候，就靠这股吸力跟重力较劲。",
+    "吸力比车重还大就不会掉，2G 本来就大于 1G。",
+    "这股吸力还把轮胎按在路面上，压得越紧摩擦力越大。",
+    "就像你拿抹布压着桌面，越用力压，越难拖得动。",
+    "所以车贴着弧形坡道往上爬，一路都不打滑。",
+    "到了垂直的地方，轮胎也一样抓得住。",
+    "赛车靠下压力过弯，其实也是同一个道理。",
+    "坡道这里只是示意，重点是车底这套吸附。",
+    "它得一直供电、一直抽风，才一直有效。",
+    "风扇一停，这股吸力也就没了。",
+    "车上还装着一套冷气推进器，专门往外喷气。",
+    "高压空气从喷管里冲出去，气往后喷，车就往前推。",
+    "它只喷压缩空气，不烧燃料，跟火箭不一样。",
+    "它帮着出点推力、调整姿态，比如离开坡道、翻转、缓降。",
+    "说到底，就是风扇把车按在路面，冷气帮它摆正姿态。"
+   ]
+  },
+  "dong-force": {
+   "file": "08-dong-joint/DongForceTransfer.srt",
+   "lines": [
+    "榫卯锁好了，力是怎么传下去的？",
+    "先看普通的穿斗房子。比例只是示意。",
+    "屋顶的重量，主要是檩条直接压在柱头上。",
+    "柱子再把这份力送到地面。",
+    "穿枋呢？它横向拉住柱子，整榀架子才不散。",
+    "它不是主要往下传力的那根。",
+    "鼓楼出挑，就不一样了。",
+    "瓜柱立在穿枋上，重量先压到枋上，再由枋传给主承柱。",
+    "节点怎么不松？羊角销从上面插进去，榫头就拔不出来。",
+    "木楔塞进缝里，把空隙挤满，节点就不晃。",
+    "销子锁住，木楔塞紧。",
+    "还有一招：卯口进口大、出口小，枋越往里穿，卡得越紧。",
+    "这叫越穿越紧。说的是卯口，不是销和楔。"
+   ]
+  },
+  "four-stroke": {
+   "file": "09-four-stroke/four-stroke_narration.srt",
+   "lines": [
+    "单缸四冲程汽油机。气缸剖开四分之一，露出活塞、连杆、曲轴和两个气门。",
+    "吸气冲程：进气门打开，活塞下行，汽油与空气的混合气被吸入气缸。",
+    "压缩冲程：两个气门都关闭，活塞上行压缩混合气，机械能转化为内能。",
+    "做功冲程：火花塞点火，燃气迅速膨胀推动活塞下行，内能转化为机械能。",
+    "排气冲程：排气门打开，活塞上行，把废气经排气管排出气缸。",
+    "一个工作循环：飞轮转两周，活塞往复两次，对外做功一次。其余三个冲程靠飞轮惯性完成。"
+   ]
+  }
+ }
+}

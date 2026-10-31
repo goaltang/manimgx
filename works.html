@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>作品 - ManimGX</title>
+<meta name="description" content="ManimGX 全部作品：每一集的 Manim 场景代码片段与对应的动画视频并排对照。">
+<meta name="author" content="TaopleOne">
+<meta name="theme-color" content="#EEF2F4">
+<link rel="canonical" href="https://goaltang.github.io/manimgx/works.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="作品 - ManimGX">
+<meta property="og:description" content="ManimGX 全部作品：每一集的 Manim 场景代码片段与对应的动画视频并排对照。">
+<meta property="og:url" content="https://goaltang.github.io/manimgx/works.html">
+<meta property="og:image" content="https://goaltang.github.io/covers/definite-integral.jpg">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+  <path d="M5 27H29M5 27V3" fill="none" stroke="currentColor" stroke-width="2.2"/>
+  <path d="M5 27Q17 27 27 5" fill="none" stroke="var(--gold)" stroke-width="2.6"/>
+</svg><span>ManimGX</span></a>
+  <nav aria-label="站内导航">
+    <ul><li><a href="index.html">首页</a></li><li><a href="works.html" aria-current="page">作品</a></li><li><a href="how.html">怎么做的</a></li><li><a href="log.html">更新记录</a></li><li><a class="home-link" href="https://goaltang.github.io/">回主站</a></li></ul>
+  </nav>
+</header>
+<main id="main">
+<section class="page-intro">
+  <h1>作品</h1>
+  <p>按完成时间排列。每一集左边是从场景代码里截出来的一段，右边是这段代码画出来的动画。行号就是源文件里的行号。</p>
+  <div class="filter" role="group" aria-label="按学科筛选"><button type="button" data-filter="all" aria-pressed="true">全部</button><button type="button" data-filter="math" aria-pressed="false">数学</button><button type="button" data-filter="physics" aria-pressed="false">物理</button><button type="button" data-filter="cs" aria-pressed="false">计算机</button></div>
+  <p class="filter-status" id="filter-status" aria-live="polite">共 8 集</p>
+</section>
+<section class="work" id="definite-integral" data-subject="math" aria-labelledby="t-definite-integral">
+  <header class="work-head">
+    <h2 id="t-definite-integral">定积分：曲线下的面积</h2>
+    <dl class="meta">
+  <div><dt>学科</dt><dd>数学</dd></div>
+  <div><dt>适用</dt><dd>大学</dd></div>
+  <div><dt>时长</dt><dd>21 秒</dd></div>
+</dl>
+    <p class="blurb">用越来越细的矩形去逼近 y = x² 下面的面积，矩形无限细时，和就变成了定积分。</p>
+  </header>
+  <div class="pair">
+    <figure class="code" data-lang="python">
+  <figcaption><span class="code-file">DefiniteIntegralArea_scene.py</span><span class="code-range">第 57–94 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="《定积分：曲线下的面积》的场景代码：DefiniteIntegralArea_scene.py 第 57–94 行">
+    <pre class="code-gutter" aria-hidden="true">57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94</pre>
+    <pre class="code-body"><code><span class="c"># --- 3. 矩形越切越密：4 → 16 → 64 ---</span>
+tip = <span class="a">m.Text</span>(<span class="s">&quot;用矩形去估面积&quot;</span>, font_size=<span class="n">26</span>, color=<span class="a">m.TEAL</span>)
+tip.next_to(head, <span class="a">m.DOWN</span>, buff=<span class="n">0.12</span>)
+
+<span class="k">def</span> <span class="d">make_rects</span>(n: int) -&gt; <span class="a">m.VGroup</span>:
+    <span class="k">return</span> axes.get_riemann_rectangles(
+        curve,
+        x_range=[<span class="n">0</span>, <span class="n">2</span>],
+        dx=<span class="n">2</span> / n,
+        input_sample_type=<span class="s">&quot;left&quot;</span>,
+        stroke_width=<span class="n">1</span>,
+        stroke_color=<span class="a">m.BLACK</span>,
+        fill_opacity=<span class="n">0.75</span>,
+        color=(<span class="a">m.BLUE</span>, <span class="a">m.GREEN</span>),
+    )
+
+n_label = <span class="a">m.Text</span>(<span class="s">&quot;分成 4 个矩形&quot;</span>, font_size=<span class="n">28</span>, color=<span class="a">m.BLUE_B</span>)
+n_label.to_corner(<span class="a">m.UR</span>, buff=<span class="n">0.35</span>)
+
+rects = make_rects(<span class="n">4</span>)
+<span class="s-self">self</span>.play(<span class="a">m.FadeIn</span>(tip), <span class="a">m.FadeIn</span>(n_label), run_time=<span class="n">0.6</span>)
+<span class="s-self">self</span>.play(<span class="a">m.FadeIn</span>(rects, lag_ratio=<span class="n">0.05</span>), run_time=<span class="n">1.3</span>)
+<span class="s-self">self</span>.wait(<span class="n">0.6</span>)
+
+<span class="k">for</span> n, label_text <span class="k">in</span> ((<span class="n">16</span>, <span class="s">&quot;分成 16 个矩形&quot;</span>), (<span class="n">64</span>, <span class="s">&quot;分成 64 个矩形&quot;</span>)):
+    new_rects = make_rects(n)
+    new_label = <span class="a">m.Text</span>(label_text, font_size=<span class="n">28</span>, color=<span class="a">m.BLUE_B</span>)
+    new_label.to_corner(<span class="a">m.UR</span>, buff=<span class="n">0.35</span>)
+    <span class="s-self">self</span>.play(
+        <span class="a">m.FadeOut</span>(rects),
+        <span class="a">m.FadeIn</span>(new_rects),
+        <span class="a">m.FadeOut</span>(n_label),
+        <span class="a">m.FadeIn</span>(new_label),
+        run_time=<span class="n">1.2</span>,
+    )
+    rects = new_rects
+    n_label = new_label
+    <span class="s-self">self</span>.wait(<span class="n">0.4</span>)</code></pre>
+  </div>
+</figure>
+    <figure class="film">
+      <video controls preload="none" playsinline width="1920" height="1080"
+    poster="https://goaltang.github.io/covers/definite-integral.jpg"
+    aria-label="定积分：曲线下的面积，动画视频，21 秒">
+    <source src="https://goaltang.github.io/films/definite-integral.mp4" type="video/mp4">
+    你的浏览器无法播放这段视频，可以<a href="https://goaltang.github.io/films/definite-integral.mp4">直接下载 MP4</a>。
+  </video>
+      <figcaption>左边是场景里让矩形越切越密的一段：同一个 make_rects，n 从 4 换成 16 再换成 64。</figcaption>
+    </figure>
+  </div>
+  
+</section><section class="work" id="tcp-handshake" data-subject="cs" aria-labelledby="t-tcp-handshake">
+  <header class="work-head">
+    <h2 id="t-tcp-handshake">TCP 三次握手</h2>
+    <dl class="meta">
+  <div><dt>学科</dt><dd>计算机</dd></div>
+  <div><dt>适用</dt><dd>大学</dd></div>
+  <div><dt>时长</dt><dd>25 秒</dd></div>
+</dl>
+    <p class="blurb">SYN、SYN-ACK、ACK 三个包来回一趟，客户端和服务器各自确认对方能收也能发，连接才算建好。</p>
+  </header>
+  <div class="pair">
+    <figure class="code" data-lang="python">
+  <figcaption><span class="code-file">02-tcp-handshake/scene.py</span><span class="code-range">第 86–116 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="《TCP 三次握手》的场景代码：scene.py 第 86–116 行">
+    <pre class="code-gutter" aria-hidden="true">86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116</pre>
+    <pre class="code-body"><code><span class="c"># --- 3. 第 1 次：SYN ---</span>
+pkt1 = <span class="s-self">self</span>._packet(<span class="s">&quot;SYN&quot;</span>, <span class="s">&quot;seq=x&quot;</span>, <span class="a">m.YELLOW</span>)
+pkt1.move_to([left_x, y_pkt, <span class="n">0</span>])
+
+arrow1 = <span class="a">m.Arrow</span>(
+    [left_x, y_link, <span class="n">0</span>],
+    [right_x, y_link, <span class="n">0</span>],
+    buff=<span class="n">0</span>,
+    stroke_width=<span class="n">3.5</span>,
+    color=<span class="a">m.YELLOW</span>,
+    max_tip_length_to_length_ratio=<span class="n">0.06</span>,
+)
+arrow1.set_opacity(<span class="n">0.4</span>)
+
+<span class="s-self">self</span>.play(<span class="a">m.FadeIn</span>(arrow1), <span class="a">m.FadeIn</span>(pkt1), run_time=<span class="n">0.45</span>)
+<span class="s-self">self</span>.play(pkt1.animate.move_to([right_x, y_pkt, <span class="n">0</span>]), run_time=<span class="n">1.55</span>)
+<span class="s-self">self</span>.play(<span class="a">m.FadeOut</span>(pkt1), run_time=<span class="n">0.3</span>)
+
+c_state2 = cn(<span class="s">&quot;SYN_SENT&quot;</span>, font_size=<span class="n">24</span>, color=<span class="a">m.YELLOW</span>)
+c_state2.next_to(client, <span class="a">m.DOWN</span>, buff=<span class="n">0.28</span>)
+s_state2 = cn(<span class="s">&quot;SYN_RCVD&quot;</span>, font_size=<span class="n">24</span>, color=<span class="a">m.YELLOW</span>)
+s_state2.next_to(server, <span class="a">m.DOWN</span>, buff=<span class="n">0.28</span>)
+<span class="s-self">self</span>.play(
+    <span class="a">m.FadeOut</span>(c_state),
+    <span class="a">m.FadeIn</span>(c_state2),
+    <span class="a">m.FadeOut</span>(s_state),
+    <span class="a">m.FadeIn</span>(s_state2),
+    run_time=<span class="n">0.65</span>,
+)
+c_state, s_state = c_state2, s_state2
+<span class="s-self">self</span>.wait(<span class="n">1.0</span>)</code></pre>
+  </div>
+</figure>
+    <figure class="film">
+      <video controls preload="none" playsinline width="1920" height="1080"
+    poster="https://goaltang.github.io/covers/tcp-handshake.jpg"
+    aria-label="TCP 三次握手，动画视频，25 秒">
+    <source src="https://goaltang.github.io/films/tcp-handshake.mp4" type="video/mp4">
+    你的浏览器无法播放这段视频，可以<a href="https://goaltang.github.io/films/tcp-handshake.mp4">直接下载 MP4</a>。
+  </video>
+      <figcaption>第一次握手：SYN 包从客户端滑到服务器，两端的状态同时从 CLOSED / LISTEN 变成 SYN_SENT / SYN_RCVD。</figcaption>
+    </figure>
+  </div>
+  
+</section><section class="work" id="matrix-transform" data-subject="math" aria-labelledby="t-matrix-transform">
+  <header class="work-head">
+    <h2 id="t-matrix-transform">矩阵如何变换平面</h2>
+    <dl class="meta">
+  <div><dt>学科</dt><dd>数学</dd></div>
+  <div><dt>适用</dt><dd>大学</dd></div>
+  <div><dt>时长</dt><dd>26 秒</dd></div>
+</dl>
+    <p class="blurb">旋转、拉伸、剪切三步走，看懂矩阵的每一列就是基向量 i、j 变换后的位置。考研数学二可视化系列第 1 集。</p>
+  </header>
+  <div class="pair">
+    <figure class="code" data-lang="python">
+  <figcaption><span class="code-file">01-matrix-transform/scene.py</span><span class="code-range">第 178–213 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="《矩阵如何变换平面》的场景代码：scene.py 第 178–213 行">
+    <pre class="code-gutter" aria-hidden="true">178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213</pre>
+    <pre class="code-body"><code><span class="c"># ------------------------------------------------------------ 变换步骤</span>
+<span class="k">def</span> <span class="d">step</span>(rows, text, geometric, run_time=<span class="n">4.0</span>):
+    <span class="s">&quot;&quot;&quot;几何动画 + 矩阵更新同步播放。&quot;&quot;&quot;</span>
+    target_matrix = <span class="a">m.MathTex</span>(<span class="s">r&quot;M = &quot;</span> + bmatrix(rows), font_size=<span class="n">46</span>).move_to(matrix_mob)
+    target_caption = <span class="a">m.Text</span>(text, font=font, font_size=<span class="n">26</span>, color=<span class="a">m.YELLOW</span>).move_to(caption)
+    <span class="s-self">self</span>.play(
+        geometric,
+        <span class="a">m.Transform</span>(matrix_mob, target_matrix),
+        <span class="a">m.Transform</span>(caption, target_caption),
+        run_time=run_time,
+        rate_func=<span class="a">m.smooth</span>,
+    )
+
+<span class="c"># ① 旋转 30°：刚性旋转，网格保持正方形</span>
+step(
+    ROTATION,
+    <span class="s">&quot;① 旋转 30°&quot;</span>,
+    figure.animate.rotate(ROTATION_DEGREES * <span class="a">m.DEGREES</span>, about_point=origin),
+)
+<span class="s-self">self</span>.wait(<span class="n">0.5</span>)
+
+<span class="c"># ② 拉伸：沿 x 拉伸、沿 y 压缩，出现矩形格子</span>
+step(
+    matmul(STRETCH, ROTATION),
+    <span class="s">&quot;② 拉伸 (1.6, 0.6)&quot;</span>,
+    <span class="a">m.ApplyMatrix</span>(STRETCH, figure, about_point=origin),
+)
+<span class="s-self">self</span>.wait(<span class="n">0.5</span>)
+
+<span class="c"># ③ 剪切：竖线保持垂直，横线倾斜</span>
+step(
+    matmul(SHEAR, matmul(STRETCH, ROTATION)),
+    <span class="s">&quot;③ 剪切 (1, 0.9)&quot;</span>,
+    <span class="a">m.ApplyMatrix</span>(SHEAR, figure, about_point=origin),
+)
+<span class="s-self">self</span>.wait(<span class="n">0.5</span>)</code></pre>
+  </div>
+</figure>
+    <figure class="film">
+      <video controls preload="none" playsinline width="1920" height="1080"
+    poster="https://goaltang.github.io/covers/matrix-transform.jpg"
+    aria-label="矩阵如何变换平面，动画视频，26 秒">
+    <source src="https://goaltang.github.io/films/matrix-transform.mp4" type="video/mp4">
+    你的浏览器无法播放这段视频，可以<a href="https://goaltang.github.io/films/matrix-transform.mp4">直接下载 MP4</a>。
+  </video>
+      <figcaption>三个变换共用一个 step()：网格的几何动画和右上角累积矩阵 M 在同一次 self.play 里同步播放。</figcaption>
+    </figure>
+  </div>
+  
+</section><section class="work" id="pythagoras" data-subject="math" aria-labelledby="t-pythagoras">
+  <header class="work-head">
+    <h2 id="t-pythagoras">勾股定理：拼图证明</h2>
+    <dl class="meta">
+  <div><dt>学科</dt><dd>数学</dd></div>
+  <div><dt>适用</dt><dd>初中</dd></div>
+  <div><dt>时长</dt><dd>2 分 30 秒</dd></div>
+</dl>
+    <p class="blurb">把四个全等直角三角形挪来挪去，空出来的面积从 c² 变成 a² + b²，不用一个公式也能看出定理为什么成立。</p>
+  </header>
+  <div class="pair">
+    <figure class="code" data-lang="python">
+  <figcaption><span class="code-file">03-pythagoras/scene.py</span><span class="code-range">第 457–469 行，第 500–519 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="《勾股定理：拼图证明》的场景代码：scene.py 第 457–469 行，第 500–519 行">
+    <pre class="code-gutter" aria-hidden="true">457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+⋮
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519</pre>
+    <pre class="code-body"><code>center = at(PUZ_S / <span class="n">2</span>, PUZ_S / <span class="n">2</span>)
+first = make_triangle(at(PUZ_S, <span class="n">0</span>), at(PUZ_S, PUZ_A), at(PUZ_A, <span class="n">0</span>))
+<span class="s-self">self</span>._set_caption(<span class="s">&quot;短边 a 是青色，长边 b 是金色，斜边 c 是红色。&quot;</span>)
+<span class="s-self">self</span>.play(<span class="a">m.Create</span>(first), run_time=<span class="n">1.3</span>)
+<span class="s-self">self</span>.wait(<span class="n">1.4</span>)
+
+triangles = [first]
+<span class="s-self">self</span>._set_caption(<span class="s">&quot;再复制三份，每个角放一个。&quot;</span>)
+<span class="k">for</span> _ <span class="k">in</span> range(<span class="n">3</span>):
+    turned = triangles[-<span class="n">1</span>].copy()
+    <span class="s-self">self</span>.play(<span class="a">m.Rotate</span>(turned, <span class="a">m.PI</span> / <span class="n">2</span>, about_point=center), run_time=<span class="n">0.95</span>)
+    triangles.append(turned)
+<span class="s-self">self</span>.wait(<span class="n">1.4</span>)
+
+<span class="s-self">self</span>._set_header(<span class="s">&quot;平移重排&quot;</span>)
+<span class="s-self">self</span>._set_caption(<span class="s">&quot;把三角形滑到新位置，不旋转，大小也不变。&quot;</span>)
+<span class="s-self">self</span>.play(<span class="a">m.FadeOut</span>(c2), run_time=<span class="n">0.4</span>)
+<span class="s-self">self</span>.wait(<span class="n">1.0</span>)
+
+<span class="s-self">self</span>.remove(tilted)
+region = <span class="a">m.always_redraw</span>(<span class="k">lambda</span>: blank_region(outline, triangles))
+<span class="s-self">self</span>.add(region)
+<span class="k">for</span> tri <span class="k">in</span> triangles:
+    <span class="s-self">self</span>.add(tri)
+
+slides = (
+    (upper_left, [PUZ_A, -PUZ_B, <span class="n">0.0</span>]),
+    (upper_right, [-PUZ_B, <span class="n">0.0</span>, <span class="n">0.0</span>]),
+    (lower_left, [<span class="n">0.0</span>, PUZ_A, <span class="n">0.0</span>]),
+)
+<span class="k">for</span> moving, vector <span class="k">in</span> slides:
+    <span class="s-self">self</span>.play(moving.animate.shift(vector), run_time=<span class="n">1.85</span>)
+    <span class="s-self">self</span>.wait(<span class="n">0.45</span>)
+</code></pre>
+  </div>
+</figure>
+    <figure class="film">
+      <video controls preload="none" playsinline width="1920" height="1080"
+    poster="https://goaltang.github.io/covers/pythagoras.jpg"
+    aria-label="勾股定理：拼图证明，动画视频，2 分 30 秒">
+    <source src="https://goaltang.github.io/films/pythagoras.mp4" type="video/mp4">
+    你的浏览器无法播放这段视频，可以<a href="https://goaltang.github.io/films/pythagoras.mp4">直接下载 MP4</a>。
+  </video>
+      <figcaption>四个三角形先绕中心各转 90°，再按三个固定位移平移，中间的空白从 c² 变成 a² 和 b²。</figcaption>
+    </figure>
+  </div>
+  
+</section><section class="work" id="projectile" data-subject="physics" aria-labelledby="t-projectile">
+  <header class="work-head">
+    <h2 id="t-projectile">平抛运动</h2>
+    <dl class="meta">
+  <div><dt>学科</dt><dd>物理</dd></div>
+  <div><dt>适用</dt><dd>高中</dd></div>
+  <div><dt>时长</dt><dd>2 分 36 秒</dd></div>
+</dl>
+    <p class="blurb">水平方向匀速，竖直方向自由落体，拆开看再合起来，最后带着做一道例题。</p>
+  </header>
+  <div class="pair">
+    <figure class="code" data-lang="python">
+  <figcaption><span class="code-file">05-projectile/scene.py</span><span class="code-range">第 532–560 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="《平抛运动》的场景代码：scene.py 第 532–560 行">
+    <pre class="code-gutter" aria-hidden="true">532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560</pre>
+    <pre class="code-body"><code>measure_y = -<span class="n">2.52</span>
+gaps = <span class="a">m.VGroup</span>()
+<span class="k">for</span> a, b <span class="k">in</span> zip(xs, xs[<span class="n">1</span>:]):
+    gaps.add(
+        <span class="a">m.DoubleArrow</span>(
+            [a, measure_y, <span class="n">0</span>],
+            [b, measure_y, <span class="n">0</span>],
+            buff=<span class="n">0.02</span>,
+            color=CYAN,
+            stroke_width=<span class="n">3.2</span>,
+            max_tip_length_to_length_ratio=<span class="n">0.16</span>,
+        )
+    )
+gaps.set_z_index(<span class="n">4</span>)
+equal = chip(<span class="s-self">self</span>._words(<span class="s">&quot;间距相等&quot;</span>, size=<span class="n">26</span>, color=CYAN))
+equal.next_to(gaps, <span class="a">m.RIGHT</span>, buff=<span class="n">0.16</span>)
+<span class="k">if</span> equal.get_bottom()[<span class="n">1</span>] &lt; BOTTOM_LIMIT:
+    equal.shift(<span class="a">m.UP</span> * (BOTTOM_LIMIT - equal.get_bottom()[<span class="n">1</span>] + <span class="n">0.02</span>))
+
+<span class="s-self">self</span>._set_caption(<span class="s">&quot;间距都相等，说明水平方向是匀速直线运动。&quot;</span>)
+<span class="s-self">self</span>.play(<span class="a">m.LaggedStart</span>(*(<span class="a">m.GrowArrow</span>(gap) <span class="k">for</span> gap <span class="k">in</span> gaps), lag_ratio=<span class="n">0.2</span>), run_time=<span class="n">1.3</span>)
+<span class="s-self">self</span>.play(<span class="a">m.FadeIn</span>(equal), run_time=<span class="n">0.45</span>)
+<span class="s-self">self</span>.wait(<span class="n">2.2</span>)
+
+formula = chip(<span class="a">m.MathTex</span>(<span class="s">r&quot;x = v_0 t&quot;</span>, font_size=<span class="n">42</span>, color=CYAN))
+formula.move_to([<span class="n">5.15</span>, <span class="n">1.35</span>, <span class="n">0</span>])
+<span class="s-self">self</span>._set_caption(<span class="s">&quot;忽略空气阻力，水平方向不受力，所以 x = v0 t。&quot;</span>)
+<span class="s-self">self</span>.play(<span class="a">m.Write</span>(formula), run_time=<span class="n">1.0</span>)
+<span class="s-self">self</span>.wait(<span class="n">2.4</span>)</code></pre>
+  </div>
+</figure>
+    <figure class="film">
+      <video controls preload="none" playsinline width="1920" height="1080"
+    poster="https://goaltang.github.io/covers/projectile.jpg"
+    aria-label="平抛运动，动画视频，2 分 36 秒">
+    <source src="https://goaltang.github.io/films/projectile.mp4" type="video/mp4">
+    你的浏览器无法播放这段视频，可以<a href="https://goaltang.github.io/films/projectile.mp4">直接下载 MP4</a>。
+  </video>
+      <figcaption>把每个残影投到地面，用一排双箭头量出水平间距，间距相等，于是写出 x = v₀t。</figcaption>
+    </figure>
+  </div>
+  
+</section><section class="work" id="roadster" data-subject="physics" aria-labelledby="t-roadster">
+  <header class="work-head">
+    <h2 id="t-roadster">倒挂的车为什么不掉</h2>
+    <dl class="meta">
+  <div><dt>学科</dt><dd>物理</dd></div>
+  <div><dt>适用</dt><dd>初中</dd></div>
+  <div><dt>时长</dt><dd>1 分 56 秒</dd></div>
+</dl>
+    <p class="blurb">车底的风扇抽走空气，大气压把车按在路面上；冷气推进器往外喷气调整姿态。用压强和摩擦力讲 Roadster 的原理，有配音。</p>
+  </header>
+  <div class="pair">
+    <figure class="code" data-lang="python">
+  <figcaption><span class="code-file">07-roadster/scene_principle.py</span><span class="code-range">第 106–108 行，第 613–649 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="《倒挂的车为什么不掉》的场景代码：scene_principle.py 第 106–108 行，第 613–649 行">
+    <pre class="code-gutter" aria-hidden="true">106
+107
+108
+⋮
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649</pre>
+    <pre class="code-body"><code><span class="k">def</span> <span class="d">slot</span>(index: int) -&gt; float:
+    <span class="s">&quot;&quot;&quot;第 index 句字幕的停留时间：配音时长 + 0.55 秒余量。&quot;&quot;&quot;</span>
+    <span class="k">return</span> DURATIONS[index] + <span class="n">0.55</span>
+
+    <span class="c"># ----------------------------------------------------------------- 0 开场</span>
+    <span class="k">def</span> <span class="d">_open</span>(<span class="s-self">self</span>) -&gt; <span class="k">None</span>:
+        <span class="c"># slot 4.07：动画 0.42+0.55+0.30+1.50+0.35 = 3.12</span>
+        <span class="s-self">self</span>._say(<span class="n">0</span>, <span class="a">m.Text</span>(CAPTIONS[<span class="n">0</span>], font=<span class="s-self">self</span>.font, font_size=<span class="n">28</span>, color=<span class="a">m.WHITE</span>), <span class="s">&quot;为什么不会掉&quot;</span>)
+        cx, cy = <span class="s-self">self</span>.RAMP_C
+        radius = <span class="s-self">self</span>.RAMP_R
+        ground_y = cy - radius
+        base = make_roadster(<span class="n">1.5</span>)
+        base.move_to(<span class="a">m.ORIGIN</span>)
+        <span class="s-self">self</span>._car_base = base
+        <span class="s-self">self</span>._ride = radius - base.height / <span class="n">2</span> - <span class="n">0.05</span>
+
+        ramp = <span class="a">m.Arc</span>(
+            radius=radius,
+            start_angle=-math.pi / <span class="n">2</span>,
+            angle=math.pi,
+            stroke_width=<span class="n">12</span>,
+            color=SILVER_DARK,
+        )
+        ramp.move_arc_center_to([cx, cy, <span class="n">0</span>])
+        ground = <span class="s-self">self</span>._road(ground_y, -<span class="n">6.9</span>, cx, width=<span class="n">8</span>)
+        car = <span class="s-self">self</span>._car_on_ramp(-math.pi / <span class="n">2</span> + <span class="n">0.03</span>)
+        mark = chip(<span class="s-self">self</span>._txt(<span class="s">&quot;？&quot;</span>, size=<span class="n">58</span>, color=FORCE))
+        mark.move_to([<span class="n">2.9</span>, <span class="n">1.5</span>, <span class="n">0</span>])
+        note = <span class="s-self">self</span>._label(<span class="s">&quot;半圆坡道（示意）&quot;</span>, <span class="n">22</span>, MUTED)
+        note.move_to([<span class="n">2.9</span>, -<span class="n">1.9</span>, <span class="n">0</span>])
+
+        <span class="s-self">self</span>._anim(<span class="a">m.Create</span>(ramp), <span class="a">m.FadeIn</span>(ground), run_time=<span class="n">0.55</span>)
+        <span class="s-self">self</span>._anim(<span class="a">m.FadeIn</span>(car), run_time=<span class="n">0.30</span>)
+        <span class="s-self">self</span>._anim(
+            <span class="a">m.Rotate</span>(car, angle=math.pi - <span class="n">0.03</span>, about_point=[cx, cy, <span class="n">0</span>]),
+            run_time=<span class="n">1.50</span>,
+            rate_func=<span class="a">m.smooth</span>,
+        )
+        <span class="s-self">self</span>._anim(<span class="a">m.FadeIn</span>(mark), <span class="a">m.FadeIn</span>(note), run_time=<span class="n">0.35</span>)
+        <span class="s-self">self</span>._keep(ramp, ground, car, mark, note, focus=car)
+        <span class="s-self">self</span>._end_scene()</code></pre>
+  </div>
+</figure>
+    <figure class="film">
+      <video controls preload="none" playsinline width="1920" height="1080"
+    poster="https://goaltang.github.io/covers/roadster.jpg"
+    aria-label="倒挂的车为什么不掉，动画视频，1 分 56 秒">
+    <source src="https://goaltang.github.io/films/roadster.mp4" type="video/mp4">
+    你的浏览器无法播放这段视频，可以<a href="https://goaltang.github.io/films/roadster.mp4">直接下载 MP4</a>。
+  </video>
+      <figcaption>每句字幕的停留时间由 slot() 给出：配音时长加 0.55 秒。开场这一句里，车沿半圆坡道转到倒挂。</figcaption>
+    </figure>
+  </div>
+  <details class="transcript">
+      <summary>旁白全文（24 句）</summary>
+      <ol><li>一辆车倒挂在坡道上，为什么不会掉下来？</li><li>答案其实就在车底，那里装着一台风扇。</li><li>风扇周围围着一圈密封裙，把车底封起来。</li><li>风扇一转，就把车底和路面之间的空气抽走。</li><li>空气一走，车底就变成一块低压区。</li><li>你可以把它当成一个大吸盘，死死吸在路面上。</li><li>车底是低压，车顶却还是正常的大气压。</li><li>上面往下压，下面往上吸，车就被按在路面上。</li><li>他们说，这套吸附力最高大概有 2G，差不多是车重的两倍。</li><li>倒挂的时候，就靠这股吸力跟重力较劲。</li><li>吸力比车重还大就不会掉，2G 本来就大于 1G。</li><li>这股吸力还把轮胎按在路面上，压得越紧摩擦力越大。</li><li>就像你拿抹布压着桌面，越用力压，越难拖得动。</li><li>所以车贴着弧形坡道往上爬，一路都不打滑。</li><li>到了垂直的地方，轮胎也一样抓得住。</li><li>赛车靠下压力过弯，其实也是同一个道理。</li><li>坡道这里只是示意，重点是车底这套吸附。</li><li>它得一直供电、一直抽风，才一直有效。</li><li>风扇一停，这股吸力也就没了。</li><li>车上还装着一套冷气推进器，专门往外喷气。</li><li>高压空气从喷管里冲出去，气往后喷，车就往前推。</li><li>它只喷压缩空气，不烧燃料，跟火箭不一样。</li><li>它帮着出点推力、调整姿态，比如离开坡道、翻转、缓降。</li><li>说到底，就是风扇把车按在路面，冷气帮它摆正姿态。</li></ol>
+    </details>
+</section><section class="work" id="dong-force" data-subject="physics" aria-labelledby="t-dong-force">
+  <header class="work-head">
+    <h2 id="t-dong-force">侗族榫卯：力怎么传下去</h2>
+    <dl class="meta">
+  <div><dt>学科</dt><dd>物理</dd></div>
+  <div><dt>适用</dt><dd>初中</dd></div>
+  <div><dt>时长</dt><dd>51 秒</dd></div>
+</dl>
+    <p class="blurb">屋顶的重量经檩条、柱子落到地面；鼓楼出挑时，瓜柱先把力压到穿枋上。羊角销和木楔让节点越穿越紧。</p>
+  </header>
+  <div class="pair">
+    <figure class="code" data-lang="srt">
+  <figcaption><span class="code-file">08-dong-joint/DongForceTransfer.srt</span><span class="code-range">第 1–51 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="《侗族榫卯：力怎么传下去》的旁白字幕：DongForceTransfer.srt 第 1–51 行">
+    <pre class="code-gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51</pre>
+    <pre class="code-body"><code><span class="c">1</span>
+<span class="n">00:00:00,000 --&gt; 00:00:04,300</span>
+榫卯锁好了，力是怎么传下去的？
+
+<span class="c">2</span>
+<span class="n">00:00:04,300 --&gt; 00:00:08,060</span>
+先看普通的穿斗房子。比例只是示意。
+
+<span class="c">3</span>
+<span class="n">00:00:08,060 --&gt; 00:00:11,660</span>
+屋顶的重量，主要是檩条直接压在柱头上。
+
+<span class="c">4</span>
+<span class="n">00:00:11,660 --&gt; 00:00:14,910</span>
+柱子再把这份力送到地面。
+
+<span class="c">5</span>
+<span class="n">00:00:14,910 --&gt; 00:00:18,310</span>
+穿枋呢？它横向拉住柱子，整榀架子才不散。
+
+<span class="c">6</span>
+<span class="n">00:00:18,310 --&gt; 00:00:21,710</span>
+它不是主要往下传力的那根。
+
+<span class="c">7</span>
+<span class="n">00:00:21,710 --&gt; 00:00:25,410</span>
+鼓楼出挑，就不一样了。
+
+<span class="c">8</span>
+<span class="n">00:00:25,410 --&gt; 00:00:30,810</span>
+瓜柱立在穿枋上，重量先压到枋上，再由枋传给主承柱。
+
+<span class="c">9</span>
+<span class="n">00:00:30,810 --&gt; 00:00:36,260</span>
+节点怎么不松？羊角销从上面插进去，榫头就拔不出来。
+
+<span class="c">10</span>
+<span class="n">00:00:36,260 --&gt; 00:00:39,710</span>
+木楔塞进缝里，把空隙挤满，节点就不晃。
+
+<span class="c">11</span>
+<span class="n">00:00:39,710 --&gt; 00:00:42,860</span>
+销子锁住，木楔塞紧。
+
+<span class="c">12</span>
+<span class="n">00:00:42,860 --&gt; 00:00:47,410</span>
+还有一招：卯口进口大、出口小，枋越往里穿，卡得越紧。
+
+<span class="c">13</span>
+<span class="n">00:00:47,410 --&gt; 00:00:51,400</span>
+这叫越穿越紧。说的是卯口，不是销和楔。</code></pre>
+  </div>
+</figure>
+    <figure class="film">
+      <video controls preload="none" playsinline width="1920" height="1080"
+    poster="https://goaltang.github.io/covers/dong-force.jpg"
+    aria-label="侗族榫卯：力怎么传下去，动画视频，51 秒">
+    <source src="https://goaltang.github.io/films/dong-force.mp4" type="video/mp4">
+    你的浏览器无法播放这段视频，可以<a href="https://goaltang.github.io/films/dong-force.mp4">直接下载 MP4</a>。
+  </video>
+      <figcaption>这一集的素材目录里只有成片和字幕文件，没有 scene.py，所以这里放的是旁白字幕原文。</figcaption>
+    </figure>
+  </div>
+  <details class="transcript">
+      <summary>旁白全文（13 句）</summary>
+      <ol><li>榫卯锁好了，力是怎么传下去的？</li><li>先看普通的穿斗房子。比例只是示意。</li><li>屋顶的重量，主要是檩条直接压在柱头上。</li><li>柱子再把这份力送到地面。</li><li>穿枋呢？它横向拉住柱子，整榀架子才不散。</li><li>它不是主要往下传力的那根。</li><li>鼓楼出挑，就不一样了。</li><li>瓜柱立在穿枋上，重量先压到枋上，再由枋传给主承柱。</li><li>节点怎么不松？羊角销从上面插进去，榫头就拔不出来。</li><li>木楔塞进缝里，把空隙挤满，节点就不晃。</li><li>销子锁住，木楔塞紧。</li><li>还有一招：卯口进口大、出口小，枋越往里穿，卡得越紧。</li><li>这叫越穿越紧。说的是卯口，不是销和楔。</li></ol>
+    </details>
+</section><section class="work" id="four-stroke" data-subject="physics" aria-labelledby="t-four-stroke">
+  <header class="work-head">
+    <h2 id="t-four-stroke">四冲程汽油机</h2>
+    <dl class="meta">
+  <div><dt>学科</dt><dd>物理</dd></div>
+  <div><dt>适用</dt><dd>初中</dd></div>
+  <div><dt>时长</dt><dd>58 秒</dd></div>
+</dl>
+    <p class="blurb">吸气、压缩、做功、排气。飞轮转两周，活塞往复两次，对外只做功一次。配音加背景音乐，机器动画来自 Anatomy。</p>
+  </header>
+  <div class="pair">
+    <figure class="code" data-lang="python">
+  <figcaption><span class="code-file">_transfer/grok-out/fs_run2.py</span><span class="code-range">第 8–18 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="《四冲程汽油机》的场景代码：fs_run2.py 第 8–18 行">
+    <pre class="code-gutter" aria-hidden="true">8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre>
+    <pre class="code-body"><code>shots=json.load(open(P+<span class="s">&#x27;script.json&#x27;</span>))[<span class="s">&#x27;shots&#x27;</span>]
+<span class="k">def</span> <span class="d">dur</span>(f): <span class="k">return</span> float(subprocess.check_output([<span class="s">&#x27;ffprobe&#x27;</span>,<span class="s">&#x27;-v&#x27;</span>,<span class="s">&#x27;error&#x27;</span>,<span class="s">&#x27;-show_entries&#x27;</span>,<span class="s">&#x27;format=duration&#x27;</span>,<span class="s">&#x27;-of&#x27;</span>,<span class="s">&#x27;csv=p=0&#x27;</span>,f]))
+res=[]
+<span class="k">for</span> i,s <span class="k">in</span> enumerate(shots):
+  f=W+<span class="s">f&#x27;vo{i}.wav&#x27;</span>
+  <span class="k">if</span> <span class="k">not</span> os.path.exists(f):
+    body=json.dumps({<span class="s">&#x27;model&#x27;</span>:<span class="s">&#x27;qwen3-tts-flash&#x27;</span>,<span class="s">&#x27;input&#x27;</span>:{<span class="s">&#x27;text&#x27;</span>:s[<span class="s">&#x27;vo&#x27;</span>],<span class="s">&#x27;voice&#x27;</span>:<span class="s">&#x27;Serena&#x27;</span>,<span class="s">&#x27;language_type&#x27;</span>:<span class="s">&#x27;Chinese&#x27;</span>}}).encode()
+    r=urllib.request.Request(<span class="s">&#x27;https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation&#x27;</span>,body,{<span class="s">&#x27;Authorization&#x27;</span>:<span class="s">&#x27;Bearer &#x27;</span>+key,<span class="s">&#x27;Content-Type&#x27;</span>:<span class="s">&#x27;application/json&#x27;</span>})
+    u=json.load(urllib.request.urlopen(r,timeout=<span class="n">120</span>))[<span class="s">&#x27;output&#x27;</span>][<span class="s">&#x27;audio&#x27;</span>][<span class="s">&#x27;url&#x27;</span>]
+    urllib.request.urlretrieve(u,f)
+  d=dur(f); st=s[<span class="s">&#x27;t0&#x27;</span>]+<span class="n">0.4</span>; res.append((st,d,s))</code></pre>
+  </div>
+</figure>
+    <figure class="film">
+      <video controls preload="none" playsinline width="1920" height="1080"
+    poster="https://goaltang.github.io/covers/four-stroke.jpg"
+    aria-label="四冲程汽油机，动画视频，58 秒">
+    <source src="https://goaltang.github.io/films/four-stroke.mp4" type="video/mp4">
+    你的浏览器无法播放这段视频，可以<a href="https://goaltang.github.io/films/four-stroke.mp4">直接下载 MP4</a>。
+  </video>
+      <figcaption>四冲程的机器画面来自 Anatomy，这一集在 ManimGX 里做的是配音和配乐。左边是配音部分：每个镜头的旁白用 qwen3-tts-flash 合成一条，放在镜头开始后 0.4 秒。</figcaption>
+    </figure>
+  </div>
+  <details class="transcript">
+      <summary>旁白全文（6 句）</summary>
+      <ol><li>单缸四冲程汽油机。气缸剖开四分之一，露出活塞、连杆、曲轴和两个气门。</li><li>吸气冲程：进气门打开，活塞下行，汽油与空气的混合气被吸入气缸。</li><li>压缩冲程：两个气门都关闭，活塞上行压缩混合气，机械能转化为内能。</li><li>做功冲程：火花塞点火，燃气迅速膨胀推动活塞下行，内能转化为机械能。</li><li>排气冲程：排气门打开，活塞上行，把废气经排气管排出气缸。</li><li>一个工作循环：飞轮转两周，活塞往复两次，对外做功一次。其余三个冲程靠飞轮惯性完成。</li></ol>
+    </details>
+</section>
+</main>
+<footer class="site-foot">
+  <p>ManimGX 的动画、代码与旁白均由 TaopleOne 制作。更多作品在主站 <a href="https://goaltang.github.io/">goaltang.github.io</a>。</p>
+  <p class="foot-small">页面里的视频直接从主站加载，点播放才开始下载。</p>
+</footer>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

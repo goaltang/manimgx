@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ManimGX</title>
+<meta name="description" content="ManimGX：TaopleOne 用 Manim 制作的数学、物理、计算机知识讲解动画，附真实的场景代码。">
+<meta name="author" content="TaopleOne">
+<meta name="theme-color" content="#EEF2F4">
+<link rel="canonical" href="https://goaltang.github.io/manimgx/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ManimGX">
+<meta property="og:description" content="ManimGX：TaopleOne 用 Manim 制作的数学、物理、计算机知识讲解动画，附真实的场景代码。">
+<meta property="og:url" content="https://goaltang.github.io/manimgx/">
+<meta property="og:image" content="https://goaltang.github.io/covers/definite-integral.jpg">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+  <path d="M5 27H29M5 27V3" fill="none" stroke="currentColor" stroke-width="2.2"/>
+  <path d="M5 27Q17 27 27 5" fill="none" stroke="var(--gold)" stroke-width="2.6"/>
+</svg><span>ManimGX</span></a>
+  <nav aria-label="站内导航">
+    <ul><li><a href="index.html" aria-current="page">首页</a></li><li><a href="works.html">作品</a></li><li><a href="how.html">怎么做的</a></li><li><a href="log.html">更新记录</a></li><li><a class="home-link" href="https://goaltang.github.io/">回主站</a></li></ul>
+  </nav>
+</header>
+<main id="main">
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-text">
+    <h1 id="hero-title">ManimGX</h1>
+    <p class="lede">TaopleOne 用 Manim 一帧一帧写出来的知识讲解动画。</p>
+    <p>每一集只讲一件事：矩阵怎么变换平面，三角形怎么拼出勾股定理，倒挂的车为什么不掉。画面里的每条线、每个公式都写在 Python 场景代码里。</p>
+    <p class="hero-links"><a class="btn" href="works.html">看全部作品</a><a class="quiet" href="how.html">看看是怎么做的</a></p>
+  </div>
+  <figure class="plot" aria-labelledby="plot-cap">
+    <svg id="riemann" viewBox="0 0 640 430" role="img" aria-labelledby="plot-title plot-desc">
+      <title id="plot-title">y = x² 在区间 0 到 2 上的面积</title>
+      <desc id="plot-desc">坐标系里画出抛物线 y = x²，先用 4 个矩形估计曲线下的面积，再换成 16 个、64 个，最后把面积填满。</desc>
+    </svg>
+    <figcaption id="plot-cap">
+      <ol class="plot-code" aria-label="对应的场景代码，DefiniteIntegralArea_scene.py">
+<li data-step="0"><span class="ln">76</span><code>rects = make_rects(<span class="n">4</span>)</code></li>
+<li data-step="1"><span class="ln">81</span><code><span class="k">for</span> n, label_text <span class="k">in</span> ((<span class="n">16</span>, <span class="s">&quot;分成 16 个矩形&quot;</span>), (<span class="n">64</span>, <span class="s">&quot;分成 64 个矩形&quot;</span>)):</code></li>
+<li data-step="2"><span class="ln">129</span><code>area = axes.get_area(</code></li>
+      </ol>
+      <p class="plot-note">照着《定积分：曲线下的面积》的场景代码，在浏览器里重画一遍：矩形从 4 个分到 64 个，最后填满面积。<button type="button" class="replay" id="replay" hidden>重播</button></p>
+    </figcaption>
+  </figure>
+</section>
+
+<section class="about" aria-labelledby="about-title">
+  <h2 id="about-title">ManimGX 是什么</h2>
+  <div class="about-cols">
+    <div class="prose">
+      <p>ManimGX 不是一个软件库，而是一组讲解动画。题目来自课本和考试：初中的勾股定理、四冲程汽油机，高中的平抛运动，大学的定积分、矩阵变换，考研 408 的 TCP 三次握手。</p>
+      <p>动画都用 Manim 写成。一集就是一个 Scene 类，坐标轴、图形、公式和字幕都是代码里的对象，动画是一次次 <code>self.play(...)</code>。所以改一个数字、挪一个位置，重新渲染就行，不用回到剪辑软件里一帧帧拖。</p>
+      <p>后来几集加上了中文配音：旁白先写成一句一句的字幕，配音合成好以后，按每句的时长去排画面。</p>
+    </div>
+    <dl class="facts">
+      <div><dt>已上线</dt><dd>8 集</dd></div>
+      <div><dt>学科</dt><dd>数学 3 集、计算机 1 集、物理 4 集</dd></div>
+      <div><dt>画面</dt><dd>1920 × 1080，大多是 60 帧</dd></div>
+      <div><dt>最长一集</dt><dd>平抛运动，2 分 36 秒</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="featured" aria-labelledby="featured-title">
+  <h2 id="featured-title">先看这三集</h2>
+  <div class="plates">
+<article class="plate plate-0">
+  <a class="plate-img" href="works.html#pythagoras">
+    <img src="https://goaltang.github.io/covers/pythagoras.jpg" width="960" height="540" loading="lazy" decoding="async"
+      alt="《勾股定理：拼图证明》动画中的一帧">
+  </a>
+  <div class="plate-text">
+    <h3><a href="works.html#pythagoras">勾股定理：拼图证明</a></h3>
+    <dl class="meta">
+  <div><dt>学科</dt><dd>数学</dd></div>
+  <div><dt>适用</dt><dd>初中</dd></div>
+  <div><dt>时长</dt><dd>2 分 30 秒</dd></div>
+</dl>
+    <p>把四个全等直角三角形挪来挪去，空出来的面积从 c² 变成 a² + b²，不用一个公式也能看出定理为什么成立。</p>
+  </div>
+</article><article class="plate plate-1">
+  <a class="plate-img" href="works.html#projectile">
+    <img src="https://goaltang.github.io/covers/projectile.jpg" width="960" height="540" loading="lazy" decoding="async"
+      alt="《平抛运动》动画中的一帧">
+  </a>
+  <div class="plate-text">
+    <h3><a href="works.html#projectile">平抛运动</a></h3>
+    <dl class="meta">
+  <div><dt>学科</dt><dd>物理</dd></div>
+  <div><dt>适用</dt><dd>高中</dd></div>
+  <div><dt>时长</dt><dd>2 分 36 秒</dd></div>
+</dl>
+    <p>水平方向匀速，竖直方向自由落体，拆开看再合起来，最后带着做一道例题。</p>
+  </div>
+</article><article class="plate plate-2">
+  <a class="plate-img" href="works.html#roadster">
+    <img src="https://goaltang.github.io/covers/roadster.jpg" width="960" height="540" loading="lazy" decoding="async"
+      alt="《倒挂的车为什么不掉》动画中的一帧">
+  </a>
+  <div class="plate-text">
+    <h3><a href="works.html#roadster">倒挂的车为什么不掉</a></h3>
+    <dl class="meta">
+  <div><dt>学科</dt><dd>物理</dd></div>
+  <div><dt>适用</dt><dd>初中</dd></div>
+  <div><dt>时长</dt><dd>1 分 56 秒</dd></div>
+</dl>
+    <p>车底的风扇抽走空气，大气压把车按在路面上；冷气推进器往外喷气调整姿态。用压强和摩擦力讲 Roadster 的原理，有配音。</p>
+  </div>
+</article>
+  </div>
+  <p class="more"><a href="works.html">全部 8 集，每一集都配了对应的场景代码</a></p>
+</section>
+</main>
+<footer class="site-foot">
+  <p>ManimGX 的动画、代码与旁白均由 TaopleOne 制作。更多作品在主站 <a href="https://goaltang.github.io/">goaltang.github.io</a>。</p>
+  <p class="foot-small">页面里的视频直接从主站加载，点播放才开始下载。</p>
+</footer>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

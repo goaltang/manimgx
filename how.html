@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>怎么做的 - ManimGX</title>
+<meta name="description" content="ManimGX 的制作流程：Manim 场景代码、旁白与配音、混音和导出，每一步都附真实代码。">
+<meta name="author" content="TaopleOne">
+<meta name="theme-color" content="#EEF2F4">
+<link rel="canonical" href="https://goaltang.github.io/manimgx/how.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="怎么做的 - ManimGX">
+<meta property="og:description" content="ManimGX 的制作流程：Manim 场景代码、旁白与配音、混音和导出，每一步都附真实代码。">
+<meta property="og:url" content="https://goaltang.github.io/manimgx/how.html">
+<meta property="og:image" content="https://goaltang.github.io/covers/definite-integral.jpg">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+  <path d="M5 27H29M5 27V3" fill="none" stroke="currentColor" stroke-width="2.2"/>
+  <path d="M5 27Q17 27 27 5" fill="none" stroke="var(--gold)" stroke-width="2.6"/>
+</svg><span>ManimGX</span></a>
+  <nav aria-label="站内导航">
+    <ul><li><a href="index.html">首页</a></li><li><a href="works.html">作品</a></li><li><a href="how.html" aria-current="page">怎么做的</a></li><li><a href="log.html">更新记录</a></li><li><a class="home-link" href="https://goaltang.github.io/">回主站</a></li></ul>
+  </nav>
+</header>
+<main id="main">
+<section class="page-intro">
+  <h1>怎么做的</h1>
+  <p>下面每一步都配了一段真实代码，出自 ManimGX 素材目录里的场景文件和脚本。从写场景到拿到带配音的成片，大致是这样一条路。</p>
+</section>
+
+<ol class="steps">
+<li class="step">
+  <h2>写一个场景</h2>
+  <div class="step-body">
+    <div class="prose">
+      <p>每一集是一个 <code>Scene</code> 子类，画面全部写在 <code>construct()</code> 里。<code>self.play(...)</code> 播一段动画，<code>run_time</code> 定它播多久，<code>self.wait()</code> 停一下让人看清。场景文件开头写着 <code>import manimgx as m</code>，文件头注释说明它兼容 Manim CE 0.22 的公共 API，所以 <code>Text</code>、<code>MathTex</code>、<code>Axes</code> 这些都是 Manim 里的老面孔。</p>
+      <p>渲染一集只要一条命令，场景文件的注释里都写着，例如 <code>manimgx render scene.py PythagoreanProof</code>。</p>
+    </div>
+    <div class="codes">
+    <figure class="code" data-lang="python">
+  <figcaption><span class="code-file">DefiniteIntegralArea_scene.py</span><span class="code-range">第 12–23 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="定积分场景的开头：DefiniteIntegralArea_scene.py 第 12–23 行">
+    <pre class="code-gutter" aria-hidden="true">12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23</pre>
+    <pre class="code-body"><code><span class="k">class</span> <span class="d">DefiniteIntegralArea</span>(<span class="a">m.Scene</span>):
+    <span class="k">def</span> <span class="d">construct</span>(<span class="s-self">self</span>) -&gt; <span class="k">None</span>:
+        <span class="c"># --- 1. 标题 ---</span>
+        title = <span class="a">m.Text</span>(<span class="s">&quot;定积分：曲线下的面积&quot;</span>, font_size=<span class="n">48</span>, color=<span class="a">m.WHITE</span>)
+        subtitle = <span class="a">m.Text</span>(<span class="s">&quot;考研数学二 · 入门直觉&quot;</span>, font_size=<span class="n">28</span>, color=<span class="a">m.GREY_B</span>)
+        head = <span class="a">m.VGroup</span>(title, subtitle).arrange(<span class="a">m.DOWN</span>, buff=<span class="n">0.22</span>)
+        head.move_to(<span class="a">m.ORIGIN</span>)
+
+        <span class="s-self">self</span>.play(<span class="a">m.Write</span>(title), run_time=<span class="n">1.3</span>)
+        <span class="s-self">self</span>.play(<span class="a">m.FadeIn</span>(subtitle, shift=<span class="n">0.2</span> * <span class="a">m.UP</span>), run_time=<span class="n">0.7</span>)
+        <span class="s-self">self</span>.wait(<span class="n">0.7</span>)
+        <span class="s-self">self</span>.play(head.animate.scale(<span class="n">0.65</span>).to_edge(<span class="a">m.UP</span>, buff=<span class="n">0.18</span>), run_time=<span class="n">0.8</span>)</code></pre>
+  </div>
+</figure>
+    </div>
+  </div>
+</li>
+
+<li class="step">
+  <h2>定好版面的规矩</h2>
+  <div class="step-body">
+    <div class="prose">
+      <p>成片固定 1920 × 1080。画面上下各留一条字幕带，图形不许伸进去，用 <code>TOP_LIMIT</code> 和 <code>BOTTOM_LIMIT</code> 两个常量卡住。</p>
+      <p>中文最怕渲染成方块。场景会先用 <code>fc-list</code> 问系统装了哪些中文字体，再从候选名单里挑第一个真实存在的。标签底下还会垫一块深色底，免得被线条压住。</p>
+    </div>
+    <div class="codes">
+    <figure class="code" data-lang="python">
+  <figcaption><span class="code-file">03-pythagoras/scene.py</span><span class="code-range">第 19–20 行，第 38–40 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="勾股定理场景的版面设置：scene.py 第 19–20 行，第 38–40 行">
+    <pre class="code-gutter" aria-hidden="true">19
+20
+⋮
+38
+39
+40</pre>
+    <pre class="code-body"><code><span class="a">m.config</span>.pixel_width = <span class="n">1920</span>
+<span class="a">m.config</span>.pixel_height = <span class="n">1080</span>
+
+<span class="c"># 画面上下两条字幕带，图形不要伸进这里。</span>
+TOP_LIMIT = <span class="n">2.95</span>
+BOTTOM_LIMIT = -<span class="n">2.85</span></code></pre>
+  </div>
+</figure>
+    <figure class="code" data-lang="python">
+  <figcaption><span class="code-file">07-roadster/scene_principle.py</span><span class="code-range">第 111–137 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="Roadster 场景的字体挑选与标签底色：scene_principle.py 第 111–137 行">
+    <pre class="code-gutter" aria-hidden="true">111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137</pre>
+    <pre class="code-body"><code><span class="k">def</span> <span class="d">pick_cjk_font</span>() -&gt; str:
+    <span class="s">&quot;&quot;&quot;用 fontconfig 选一个系统里真实存在的中文字体，避免方块字。&quot;&quot;&quot;</span>
+    <span class="k">try</span>:
+        proc = subprocess.run(
+            [<span class="s">&quot;fc-list&quot;</span>, <span class="s">&quot;:lang=zh&quot;</span>, <span class="s">&quot;family&quot;</span>],
+            capture_output=<span class="k">True</span>,
+            text=<span class="k">True</span>,
+            timeout=<span class="n">5</span>,
+        )
+        families: set[str] = set()
+        <span class="k">for</span> line <span class="k">in</span> proc.stdout.splitlines():
+            <span class="k">for</span> name <span class="k">in</span> line.split(<span class="s">&quot;,&quot;</span>):
+                families.add(name.strip())
+        <span class="k">for</span> candidate <span class="k">in</span> CJK_FONT_CANDIDATES:
+            <span class="k">if</span> candidate <span class="k">in</span> families:
+                <span class="k">return</span> candidate
+    <span class="k">except</span> Exception:
+        <span class="k">pass</span>
+    <span class="k">return</span> CJK_FONT_CANDIDATES[<span class="n">0</span>]
+
+
+<span class="k">def</span> <span class="d">chip</span>(mob, opacity=<span class="n">0.92</span>):
+    <span class="s">&quot;&quot;&quot;给标签垫一块深色底，避免被线条压住。&quot;&quot;&quot;</span>
+    mob.add_background_rectangle(color=<span class="s">&quot;#10141c&quot;</span>, opacity=opacity, buff=<span class="n">0.06</span>)
+    mob.set_z_index(<span class="n">8</span>, family=<span class="k">True</span>)
+    <span class="k">return</span> mob
+</code></pre>
+  </div>
+</figure>
+    </div>
+  </div>
+</li>
+
+<li class="step">
+  <h2>先把内容算对，再画</h2>
+  <div class="step-body">
+    <div class="prose">
+      <p>有些题目的每一步都能算出来，就先用纯 Python 算一遍，再让动画照着结果走。LRU 页面置换那一集，先模拟 12 次访问，用 <code>assert</code> 核对每一步内存里的页、缺页 9 次、命中 3 次，以及 FIFO 缺页 10 次。核对不过，场景根本不会开始渲染。</p>
+      <p>LRU 这一集的场景代码和字幕已经写好，素材目录里还没有导出的成片，所以暂时没有上线。</p>
+    </div>
+    <div class="codes">
+    <figure class="code" data-lang="python">
+  <figcaption><span class="code-file">04-lru/scene.py</span><span class="code-range">第 192–211 行，第 228–231 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="LRU 场景里的模拟与核对：scene.py 第 192–211 行，第 228–231 行">
+    <pre class="code-gutter" aria-hidden="true">192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+⋮
+228
+229
+230
+231</pre>
+    <pre class="code-body"><code><span class="k">def</span> <span class="d">_check_trace</span>() -&gt; <span class="k">None</span>:
+    lru = simulate(SEQUENCE, CAPACITY, <span class="s">&quot;lru&quot;</span>)
+    fifo = simulate(SEQUENCE, CAPACITY, <span class="s">&quot;fifo&quot;</span>)
+    states = [
+        [<span class="n">7</span>],
+        [<span class="n">0</span>, <span class="n">7</span>],
+        [<span class="n">1</span>, <span class="n">0</span>, <span class="n">7</span>],
+        [<span class="n">2</span>, <span class="n">1</span>, <span class="n">0</span>],
+        [<span class="n">0</span>, <span class="n">2</span>, <span class="n">1</span>],
+        [<span class="n">3</span>, <span class="n">0</span>, <span class="n">2</span>],
+        [<span class="n">0</span>, <span class="n">3</span>, <span class="n">2</span>],
+        [<span class="n">4</span>, <span class="n">0</span>, <span class="n">3</span>],
+        [<span class="n">2</span>, <span class="n">4</span>, <span class="n">0</span>],
+        [<span class="n">3</span>, <span class="n">2</span>, <span class="n">4</span>],
+        [<span class="n">0</span>, <span class="n">3</span>, <span class="n">2</span>],
+        [<span class="n">3</span>, <span class="n">0</span>, <span class="n">2</span>],
+    ]
+    <span class="k">assert</span> [event[<span class="s">&quot;state&quot;</span>] <span class="k">for</span> event <span class="k">in</span> lru[<span class="s">&quot;events&quot;</span>]] == states
+    <span class="k">assert</span> lru[<span class="s">&quot;faults&quot;</span>] == <span class="n">9</span> <span class="k">and</span> lru[<span class="s">&quot;hits&quot;</span>] == <span class="n">3</span>
+    <span class="k">assert</span> fifo[<span class="s">&quot;faults&quot;</span>] == <span class="n">10</span> <span class="k">and</span> fifo[<span class="s">&quot;hits&quot;</span>] == <span class="n">2</span>
+
+_check_trace()
+LRU = simulate(SEQUENCE, CAPACITY, <span class="s">&quot;lru&quot;</span>)
+FIFO = simulate(SEQUENCE, CAPACITY, <span class="s">&quot;fifo&quot;</span>)
+CAPTIONS = [describe(i, event) <span class="k">for</span> i, event <span class="k">in</span> enumerate(LRU[<span class="s">&quot;events&quot;</span>])]</code></pre>
+  </div>
+</figure>
+    </div>
+  </div>
+</li>
+
+<li class="step">
+  <h2>写旁白，按配音排时间</h2>
+  <div class="step-body">
+    <div class="prose">
+      <p>带配音的几集，旁白就是字幕。以《倒挂的车为什么不掉》为例：24 句旁白写在 <code>CAPTIONS</code> 列表里，顺序就是时间轴。配音合成以后，每句的时长存进 <code>durations.json</code>，场景读进来，每句字幕在屏幕上停留“配音时长 + 0.55 秒”。还没有配音时，就按每个字 0.25 秒先估一个。</p>
+      <p>渲染结束时，场景再把每句的实际起止时间写进 <code>timings.json</code>，用来对齐配音和字幕文件。</p>
+    </div>
+    <div class="codes">
+    <figure class="code" data-lang="python">
+  <figcaption><span class="code-file">07-roadster/scene_principle.py</span><span class="code-range">第 56–60 行，第 87–108 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="Roadster 场景的旁白列表与停留时间：scene_principle.py 第 56–60 行，第 87–108 行">
+    <pre class="code-gutter" aria-hidden="true">56
+57
+58
+59
+60
+⋮
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108</pre>
+    <pre class="code-body"><code><span class="c"># 旁白即字幕，顺序和时间轴一一对应。</span>
+CAPTIONS = [
+    <span class="s">&quot;一辆车倒挂在坡道上，为什么不会掉下来？&quot;</span>,
+    <span class="s">&quot;答案其实就在车底，那里装着一台风扇。&quot;</span>,
+    <span class="s">&quot;风扇周围围着一圈密封裙，把车底封起来。&quot;</span>,
+
+<span class="k">def</span> <span class="d">_load_durations</span>(count: int) -&gt; list:
+    <span class="s">&quot;&quot;&quot;读同目录 durations.json；读不到就按句子长度估一个。&quot;&quot;&quot;</span>
+    values = [len(CAPTIONS[i]) * <span class="n">0.25</span> <span class="k">for</span> i <span class="k">in</span> range(count)]
+    <span class="k">try</span>:
+        path = os.path.join(_HERE, <span class="s">&quot;durations.json&quot;</span>)
+        <span class="k">with</span> open(path, <span class="s">&quot;r&quot;</span>, encoding=<span class="s">&quot;utf-8&quot;</span>) <span class="k">as</span> handle:
+            data = json.load(handle)
+        loaded = [float(item) <span class="k">for</span> item <span class="k">in</span> data]
+    <span class="k">except</span> Exception:
+        <span class="k">return</span> values
+    <span class="k">for</span> i <span class="k">in</span> range(count):
+        <span class="k">if</span> i &lt; len(loaded):
+            values[i] = loaded[i]
+    <span class="k">return</span> values
+
+
+DURATIONS = _load_durations(len(CAPTIONS))
+
+
+<span class="k">def</span> <span class="d">slot</span>(index: int) -&gt; float:
+    <span class="s">&quot;&quot;&quot;第 index 句字幕的停留时间：配音时长 + 0.55 秒余量。&quot;&quot;&quot;</span>
+    <span class="k">return</span> DURATIONS[index] + <span class="n">0.55</span></code></pre>
+  </div>
+</figure>
+    <figure class="code" data-lang="python">
+  <figcaption><span class="code-file">07-roadster/scene_principle.py</span><span class="code-range">第 591–611 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="Roadster 场景写出每句起止时间：scene_principle.py 第 591–611 行">
+    <pre class="code-gutter" aria-hidden="true">591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611</pre>
+    <pre class="code-body"><code><span class="k">def</span> <span class="d">_write_timings</span>(<span class="s-self">self</span>) -&gt; <span class="k">None</span>:
+    <span class="s">&quot;&quot;&quot;把每句的起止时间写进同目录 timings.json；写不了也不能让渲染失败。&quot;&quot;&quot;</span>
+    <span class="k">try</span>:
+        rows = []
+        <span class="k">for</span> i, text <span class="k">in</span> enumerate(CAPTIONS):
+            <span class="k">if</span> i &gt;= len(<span class="s-self">self</span>._starts):
+                <span class="k">break</span>
+            start = <span class="s-self">self</span>._starts[i]
+            end = <span class="s-self">self</span>._starts[i + <span class="n">1</span>] <span class="k">if</span> i + <span class="n">1</span> &lt; len(<span class="s-self">self</span>._starts) <span class="k">else</span> <span class="s-self">self</span>._now()
+            rows.append(
+                {
+                    <span class="s">&quot;start&quot;</span>: round(float(start), <span class="n">3</span>),
+                    <span class="s">&quot;end&quot;</span>: round(float(end), <span class="n">3</span>),
+                    <span class="s">&quot;text&quot;</span>: text,
+                }
+            )
+        path = os.path.join(_HERE, <span class="s">&quot;timings.json&quot;</span>)
+        <span class="k">with</span> open(path, <span class="s">&quot;w&quot;</span>, encoding=<span class="s">&quot;utf-8&quot;</span>) <span class="k">as</span> handle:
+            json.dump(rows, handle, ensure_ascii=<span class="k">False</span>, indent=<span class="n">1</span>)
+    <span class="k">except</span> Exception:
+        <span class="k">pass</span></code></pre>
+  </div>
+</figure>
+    </div>
+  </div>
+</li>
+
+<li class="step">
+  <h2>配音和配乐</h2>
+  <div class="step-body">
+    <div class="prose">
+      <p>素材目录里留着 qwen3 两个音色 Cherry 和 Serena 的试听样本。四冲程汽油机那一集的脚本写得最完整：每个镜头的旁白用 <code>qwen3-tts-flash</code> 的 Serena 音色合成一条，放进对应镜头的起点后 0.4 秒；背景音乐不用现成曲子，而是用 numpy 按四个和弦循环合成。</p>
+      <p>最后用 ffmpeg 混音：<code>adelay</code> 把每句旁白挪到它的时间点，<code>sidechaincompress</code> 让有人说话时音乐自动压低，<code>loudnorm</code> 把整体响度统一到 -16 LUFS。同时还导出一版只有背景音乐的。</p>
+      <p>LatentLoop 那一集原本打算用 Gemini 的语音合成，免费额度当天用完，所以两个版本目前都没有配音，也还没上线。</p>
+    </div>
+    <div class="codes">
+    <figure class="code" data-lang="python">
+  <figcaption><span class="code-file">_transfer/grok-out/fs_run2.py</span><span class="code-range">第 20–33 行，第 44–47 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="四冲程的背景音乐与混音：fs_run2.py 第 20–33 行，第 44–47 行">
+    <pre class="code-gutter" aria-hidden="true">20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+⋮
+44
+45
+46
+47</pre>
+    <pre class="code-body"><code>sr=<span class="n">44100</span>;T=<span class="n">57.7</span>;t=np.arange(T*sr)/sr;b=np.zeros_like(t)
+chords=[[<span class="n">57</span>,<span class="n">60</span>,<span class="n">64</span>,<span class="n">69</span>],[<span class="n">53</span>,<span class="n">57</span>,<span class="n">60</span>,<span class="n">65</span>],[<span class="n">48</span>,<span class="n">52</span>,<span class="n">55</span>,<span class="n">60</span>],[<span class="n">55</span>,<span class="n">59</span>,<span class="n">62</span>,<span class="n">67</span>]]
+hz=<span class="k">lambda</span> m:<span class="n">440</span>*<span class="n">2</span>**((m-<span class="n">69</span>)/<span class="n">12</span>)
+<span class="k">for</span> k <span class="k">in</span> range(int(T/<span class="n">4</span>)+<span class="n">1</span>):
+  c=chords[k%<span class="n">4</span>];t0=k*<span class="n">4</span>
+  <span class="k">for</span> j,m <span class="k">in</span> enumerate(c):
+    s0=int((t0+j*<span class="n">0.5</span>)*sr);n=min(int(<span class="n">4</span>*sr),len(t)-s0)
+    <span class="k">if</span> n&lt;=<span class="n">0</span>: <span class="k">continue</span>
+    tt=np.arange(n)/sr;env=np.exp(-tt*<span class="n">1.1</span>)*(<span class="n">1</span>-np.exp(-tt*<span class="n">60</span>))
+    b[s0:s0+n]+=<span class="n">0.18</span>*env*(np.sin(<span class="n">2</span>*np.pi*hz(m)*tt)+<span class="n">0.3</span>*np.sin(<span class="n">4</span>*np.pi*hz(m)*tt))
+  s0=int(t0*sr);n=min(<span class="n">4</span>*sr,len(t)-s0)
+  <span class="k">if</span> n&gt;<span class="n">0</span>:
+    tt=np.arange(n)/sr;b[s0:s0+n]+=<span class="n">0.08</span>*np.sin(np.pi*tt/<span class="n">4</span>)*np.sin(<span class="n">2</span>*np.pi*hz(c[<span class="n">0</span>]-<span class="n">12</span>)*tt)
+b/=np.abs(b).max();b*=<span class="n">0.8</span>
+
+n=len(res)
+fc=<span class="s">&#x27;;&#x27;</span>.join(fl)+<span class="s">&#x27;;&#x27;</span>+<span class="s">&#x27;&#x27;</span>.join(<span class="s">f&#x27;[v{i}]&#x27;</span> <span class="k">for</span> i <span class="k">in</span> range(n))+<span class="s">f&#x27;amix=inputs={n}:normalize=0,apad,atrim=0:57.7,asplit[vo][sc];[1:a]volume=-14dB,afade=t=in:d=2,afade=t=out:st=54.7:d=3[bg];[bg][sc]sidechaincompress=threshold=0.03:ratio=4:attack=50:release=600[bgd];[vo][bgd]amix=inputs=2:normalize=0,loudnorm=I=-16:TP=-1.5,aresample=44100[a]&#x27;</span>
+subprocess.run([<span class="s">&#x27;ffmpeg&#x27;</span>,<span class="s">&#x27;-y&#x27;</span>,<span class="s">&#x27;-i&#x27;</span>,V,<span class="s">&#x27;-i&#x27;</span>,W+<span class="s">&#x27;bgm.wav&#x27;</span>]+ins+[<span class="s">&#x27;-filter_complex&#x27;</span>,fc,<span class="s">&#x27;-map&#x27;</span>,<span class="s">&#x27;0:v&#x27;</span>,<span class="s">&#x27;-map&#x27;</span>,<span class="s">&#x27;[a]&#x27;</span>,<span class="s">&#x27;-c:v&#x27;</span>,<span class="s">&#x27;copy&#x27;</span>,<span class="s">&#x27;-c:a&#x27;</span>,<span class="s">&#x27;aac&#x27;</span>,<span class="s">&#x27;-b:a&#x27;</span>,<span class="s">&#x27;192k&#x27;</span>,OUT+<span class="s">&#x27;four-stroke_voiced.mp4&#x27;</span>],check=<span class="k">True</span>,capture_output=<span class="k">True</span>)
+subprocess.run([<span class="s">&#x27;ffmpeg&#x27;</span>,<span class="s">&#x27;-y&#x27;</span>,<span class="s">&#x27;-i&#x27;</span>,V,<span class="s">&#x27;-i&#x27;</span>,W+<span class="s">&#x27;bgm.wav&#x27;</span>,<span class="s">&#x27;-filter_complex&#x27;</span>,<span class="s">&#x27;[1:a]volume=-8dB,afade=t=in:d=2,afade=t=out:st=54.7:d=3[a]&#x27;</span>,<span class="s">&#x27;-map&#x27;</span>,<span class="s">&#x27;0:v&#x27;</span>,<span class="s">&#x27;-map&#x27;</span>,<span class="s">&#x27;[a]&#x27;</span>,<span class="s">&#x27;-c:v&#x27;</span>,<span class="s">&#x27;copy&#x27;</span>,<span class="s">&#x27;-c:a&#x27;</span>,<span class="s">&#x27;aac&#x27;</span>,<span class="s">&#x27;-b:a&#x27;</span>,<span class="s">&#x27;192k&#x27;</span>,OUT+<span class="s">&#x27;four-stroke_bgm.mp4&#x27;</span>],check=<span class="k">True</span>,capture_output=<span class="k">True</span>)</code></pre>
+  </div>
+</figure>
+    </div>
+  </div>
+</li>
+
+<li class="step">
+  <h2>导出</h2>
+  <div class="step-body">
+    <div class="prose">
+      <p>成片是 1920 × 1080 的 MP4，大多是 60 帧，最早的定积分是 30 帧。Roadster 还另外导出了 1280 × 720 的手机版，并附 SRT 字幕文件。</p>
+      <p>每集的封面不是另外画的，而是用 ffmpeg 在成片 75% 的位置截一帧。这个网站上播放的视频和封面，都直接引用主站 goaltang.github.io 上的版本。</p>
+    </div>
+    <div class="codes">
+    <figure class="code" data-lang="shell">
+  <figcaption><span class="code-file">_transfer/posters.sh</span><span class="code-range">第 1–7 行</span></figcaption>
+  <div class="code-scroll" tabindex="0" role="region" aria-label="截封面的脚本：posters.sh 第 1–7 行">
+    <pre class="code-gutter" aria-hidden="true">1
+2
+3
+4
+5
+6
+7</pre>
+    <pre class="code-body"><code>cd /mnt/d/ManimGX
+for f in 01-matrix-transform/MatrixTransformsPlane.mp4 02-tcp-handshake/TcpThreeWayHandshake.mp4 03-pythagoras/PythagoreanProof.mp4 05-projectile/ProjectileMotion.mp4 07-roadster/RoadsterPrinciple_voiced.mp4 08-dong-joint/DongForceTransfer.mp4 09-four-stroke/four-stroke_voiced.mp4 DefiniteIntegralArea.mp4; do
+  d=$(ffprobe -v error -show_entries format=duration -of csv=p=0 <span class="s">&quot;$f&quot;</span>)
+  t=$(python3 -c <span class="s">&quot;print($d*0.75)&quot;</span>)
+  out=<span class="s">&quot;${f%.mp4}-poster.jpg&quot;</span>
+  ffmpeg -y -v error -ss <span class="s">&quot;$t&quot;</span> -i <span class="s">&quot;$f&quot;</span> -frames:v 1 -q:v 3 <span class="s">&quot;$out&quot;</span> &amp;&amp; echo <span class="s">&quot;$out&quot;</span>
+done</code></pre>
+  </div>
+</figure>
+    </div>
+  </div>
+</li>
+</ol>
+</main>
+<footer class="site-foot">
+  <p>ManimGX 的动画、代码与旁白均由 TaopleOne 制作。更多作品在主站 <a href="https://goaltang.github.io/">goaltang.github.io</a>。</p>
+  <p class="foot-small">页面里的视频直接从主站加载，点播放才开始下载。</p>
+</footer>
+<script src="assets/site.js" defer></script>
+</body>
+</html>
